@@ -1,0 +1,266 @@
+<div id="modal-congestionamento" class="modal feature-modal" aria-hidden="true" style="z-index: 60;">
+    <div class="modal-content glassmorphism-modal w-full flex flex-col p-0 overflow-hidden" style="max-width: 1280px; max-height: 90vh; margin: 5vh auto;">
+        
+        <!-- Header do Modal -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 shrink-0">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Congestionamento</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Selecione o módulo e preencha os campos para iniciar o processamento.</p>
+            </div>
+            <button class="modal-close-btn relative top-0 right-0 translate-x-0 translate-y-0" onclick="closeFeatureModal('modal-congestionamento')" aria-label="Fechar">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Conteúdo do Modal (Scrollável) -->
+        <div class="px-6 pb-6 pt-2 overflow-y-auto flex-1 custom-scrollbar">
+            
+            <div id="flash-messages-container-cong" class="mb-2 space-y-3">
+                <!-- Flash messages specific to this module can be injected here via JS -->
+            </div>
+
+            <div class="card p-0 relative shadow-none border-none bg-transparent">
+                
+                <div id="loading-indicator-cong" class="loading-overlay hidden">
+                    <div class="spinner"></div>
+                    <span class="ml-3 font-semibold text-gray-700 dark:text-gray-200">Processando...</span>
+                </div>
+
+                <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="main-tab" data-tabs-toggle="#main-tab-content-cong" role="tablist">
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-orange-500 text-orange-600 dark:text-orange-500" id="congestionamento-tab" data-tabs-target="#congestionamento-content" type="button" role="tab" aria-controls="congestionamento-content" aria-selected="true" onclick="switchTabCongestionamento(this, 'congestionamento-content')">
+                                Análise de Congestionamento
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="ep-tab" data-tabs-target="#ep-content" type="button" role="tab" aria-controls="ep-content" aria-selected="false" onclick="switchTabCongestionamento(this, 'ep-content')">
+                                E.P. (Viagem e Frota)
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="main-tab-content-cong">
+                    <!-- Conteúdo Análise de Congestionamento -->
+                    <div class="tab-content" id="congestionamento-content" role="tabpanel" aria-labelledby="congestionamento-tab">
+                        <form id="form-congestionamento">
+                            
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center">
+                                        <span class="material-icons-outlined mr-3 text-orange-500 text-3xl">traffic</span>
+                                        Módulo de Congestionamento
+                                    </h2>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Carregue os arquivos necessários para a análise unificada.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                                
+                                <!-- Card 1: Saldo -->
+                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300">
+                                    <div class="flex items-center mb-4">
+                                        <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
+                                            <span class="material-icons-outlined text-blue-600 dark:text-blue-400">description</span>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-800 dark:text-gray-200">1. Saldo (.txt)</h3>
+                                    </div>
+                                    
+                                    <div class="file-input-container border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white dark:hover:bg-gray-800 transition-colors" id="cong-txt-dropzone">
+                                        <span class="material-icons-outlined text-gray-400 mb-2">upload_file</span>
+                                        <label for="cong-txt-input" class="text-sm font-medium text-blue-600 hover:underline cursor-pointer mb-1">Clique para selecionar</label>
+                                        <span class="text-xs text-gray-500">ou arraste os arquivos TXT</span>
+                                        <input type="file" id="cong-txt-input" name="arquivos_txt_cong" class="hidden" multiple accept=".txt">
+                                    </div>
+                                    <div class="file-list-preview mt-3 text-xs" id="cong-txt-list-preview">
+                                        <span class="text-gray-400 italic">Nenhum arquivo selecionado.</span>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Referência -->
+                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300">
+                                    <div class="flex items-center mb-4">
+                                        <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg mr-3">
+                                            <span class="material-icons-outlined text-green-600 dark:text-green-400">table_view</span>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-800 dark:text-gray-200">2. Referência (.xls)</h3>
+                                    </div>
+                                    
+                                    <div class="file-input-container border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white dark:hover:bg-gray-800 transition-colors" id="cong-xls-dropzone">
+                                        <span class="material-icons-outlined text-gray-400 mb-2">upload_file</span>
+                                        <label for="cong-xls-input" class="text-sm font-medium text-green-600 hover:underline cursor-pointer mb-1">Clique para selecionar</label>
+                                        <span class="text-xs text-gray-500">ou arraste os arquivos XLS</span>
+                                        <input type="file" id="cong-xls-input" name="arquivos_xls_cong" class="hidden" multiple accept=".xls, .xlsx">
+                                    </div>
+                                    <div class="file-list-preview mt-3 text-xs" id="cong-xls-list-preview">
+                                        <span class="text-gray-400 italic">Nenhum arquivo selecionado.</span>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3: Alterações -->
+                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300">
+                                    <div class="flex items-center mb-4">
+                                        <div class="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg mr-3">
+                                            <span class="material-icons-outlined text-amber-600 dark:text-amber-400">edit_note</span>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-800 dark:text-gray-200">3. Alterações (.ods)</h3>
+                                    </div>
+                                    
+                                    <div class="file-input-container border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 flex flex-col items-center justify-center text-center bg-white dark:bg-gray-800/30">
+                                        <div class="w-full">
+                                            <label for="ajuste-alteracoes-input" class="btn btn-secondary btn-sm w-full justify-center mb-2">Selecionar Arquivo</label>
+                                            <input type="file" id="ajuste-alteracoes-input" name="ajuste_arquivo_alteracoes_ods" class="hidden" accept=".ods">
+                                            <div class="mt-2 text-center">
+                                                <span class="file-name text-xs text-gray-600 dark:text-gray-300 break-all" id="ajuste-alteracoes-label" data-default="Nenhum arquivo">Nenhum arquivo</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-gray-400 mt-3 text-center">
+                                        Arquivo de regras para ajuste de viagens.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-4 mb-8 flex flex-col md:flex-row items-center gap-4 border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center flex-shrink-0">
+                                    <span class="material-icons-outlined text-gray-500 mr-2">save</span>
+                                    <span class="font-semibold text-sm text-gray-700 dark:text-gray-300">Arquivo Final:</span>
+                                </div>
+                                <div class="flex-grow w-full">
+                                    <input type="text" id="cong-nome-saida" name="nome_arquivo_saida" class="input-field !py-2 !text-sm w-full bg-white dark:bg-gray-800" value="AlteracoesProgramacao_AJUSTADO_{% now 'dmY' %}.txt">
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 hidden md:block">
+                                    Download automático ao finalizar.
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-4 justify-end">
+                                <button type="button" id="cong-limpar-btn" class="btn btn-secondary px-6">
+                                    Limpar Campos
+                                </button>
+                                
+                                <button type="button" onclick="iniciarProcessamentoCongestionamento(event)" id="cong-submit-btn" class="btn btn-primary px-8 py-2.5 shadow-lg shadow-blue-500/30">
+                                    <span class="material-icons-outlined mr-2">play_arrow</span>
+                                    Iniciar Processamento
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Conteúdo E.P. -->
+                    <div class="tab-content hidden" id="ep-content" role="tabpanel" aria-labelledby="ep-tab">
+                        <form id="form-ep">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center">
+                                        <span class="material-icons-outlined mr-3 text-purple-500 text-3xl">pending_actions</span>
+                                        Módulo E.P. (Viagem e Frota)
+                                    </h2>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Filtre e processe os dados de execução programada.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                                
+                                <div class="lg:col-span-1 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                                    <h3 class="font-semibold mb-4 dark:text-gray-200 flex items-center">
+                                        <span class="material-icons-outlined text-purple-500 mr-2 text-sm">calendar_today</span>
+                                        Seleção
+                                    </h3>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Período</label>
+                                            <div class="flex gap-2">
+                                                <input type="hidden" name="ep_dias_selecionados" id="ep-dias-hidden-input">
+                                                <button type="button" id="ep-dias-btn" class="btn btn-secondary btn-sm w-full justify-center">Selecionar Dias</button>
+                                            </div>
+                                            <div class="mt-1 text-xs text-gray-600 dark:text-gray-400 text-center" id="ep-dias-label">Nenhum dia selecionado</div>
+                                        </div>
+                                        
+                                        <div class="pt-2 border-t dark:border-gray-700">
+                                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Arquivo TXT</label>
+                                            <div class="file-display-area bg-white dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-600">
+                                                <span class="file-name text-xs block mb-2 truncate" id="ep-txt-label" data-default="Nenhum selecionado">Nenhum selecionado</span>
+                                                <label for="ep-txt-input" class="btn btn-secondary btn-sm w-full justify-center !text-xs !py-1">Buscar Arquivo</label>
+                                                <input type="file" id="ep-txt-input" name="ep_arquivos_txt" class="hidden" multiple accept=".txt">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-2 space-y-6">
+                                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                                        <h3 class="font-semibold mb-4 dark:text-gray-200 flex items-center">
+                                            <span class="material-icons-outlined text-purple-500 mr-2 text-sm">filter_alt</span>
+                                            Filtros de Processamento
+                                        </h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label for="ep-operador" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Operador</label>
+                                                <select id="ep-operador" name="ep_operador" class="input-field !py-2 !text-sm bg-white">
+                                                    <option value="Todas">Todas</option>
+                                                    <option value="BOA">BOA</option>
+                                                    <option value="CAX">CAX</option>
+                                                    <option value="CSR">CSR</option>
+                                                    <option value="EME">EME</option>
+                                                    <option value="GLO">GLO</option>
+                                                    <option value="SJT">SJT</option>
+                                                    <option value="VML">VML</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label for="ep-linhas" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Linhas</label>
+                                                <input type="text" id="ep-linhas" name="ep_linhas" class="input-field !py-2 !text-sm bg-white" value="Todas" placeholder="Ex: 123, 456">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700 flex items-center gap-4">
+                                        <div class="flex-grow">
+                                            <label for="ep-nome-saida" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome do Arquivo de Saída</label>
+                                            <input type="text" id="ep-nome-saida" name="ep_nome_arquivo_saida" class="input-field !py-2 !text-sm bg-white" value="AlteracaoProgramacao.txt">
+                                        </div>
+                                        <div class="self-end">
+                                            <button type="button" onclick="iniciarProcessamentoEP(event)" id="ep-submit-btn" class="btn btn-primary h-[38px] px-6">
+                                                Processar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                 <button type="button" id="ep-limpar-btn" class="text-sm text-gray-500 hover:text-gray-700 underline">Limpar formulário EP</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Seleção de Dias (aninhado ou separado, idealmente separado mas pode ser aqui se for específico do congestionamento) -->
+<!-- Como este modal é chamado pelo JS do Congestionamento, ele precisa estar disponível. Vamos colocá-lo aqui dentro do partial, mas fora do modal principal, ou gerenciá-lo globalmente. 
+    Para evitar conflitos de z-index, vamos deixá-lo como um modal irmão, mas dentro deste partial. -->
+
+<div id="diasModal" class="modal feature-submodal" aria-hidden="true" style="z-index: 70;">
+    <div class="modal-content glassmorphism-modal w-full max-w-lg">
+        <button class="modal-close-btn" id="closeDiasModal" aria-label="Fechar" onclick="closeModal('diasModal')">&times;</button>
+        <h2 id="diasModalTitle" class="modal-title">Selecionar Dias</h2>
+        <div class="dias-grid max-h-60 overflow-y-auto custom-scrollbar p-2" id="dias-grid-container">
+            <!-- Grid generated by JS -->
+        </div>
+        <div class="mt-8 flex justify-end gap-3">
+            <button id="diasModalLimpar" type="button" class="btn btn-secondary">Limpar Seleção</button>
+            <button id="diasModalSalvar" type="button" class="btn btn-primary">Salvar e Fechar</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load l10n %}
+
+{% block title %}Portal de Conexões - RCB{% endblock %}
+
+{% block header_title %}Portal de Conexões{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid gap-6">
+    
+    <!-- Main Dashboard Grid: 2 Columns on large screens (2/3 Left, 1/3 Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column (KPIs, Notes, Agenda) -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- KPI Cards Grid (Inside Left Column) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Active Users KPI -->
+                <div class="card p-4 lg:p-6 flex items-center justify-between hover:shadow-lg transition-shadow duration-300 border-l-4 border-green-500">
+                    <div>
+                        <p class="text-xs lg:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Usuários Ativos</p>
+                        <p class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 mt-1" id="kpi-users-active-count">{{ kpi_users_active }}</p>
+                    </div>
+                    <div class="p-2 lg:p-3 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400">
+                        <span class="material-icons-outlined text-2xl lg:text-3xl">people</span>
+                    </div>
+                </div>
+
+                <!-- Pending Requests KPI -->
+                <div class="card p-4 lg:p-6 flex items-center justify-between hover:shadow-lg transition-shadow duration-300 border-l-4 border-yellow-500 cursor-pointer" 
+                     onclick="openFeatureModal('modal-aprovar_registros')">
+                    <div>
+                        <p class="text-xs lg:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pendentes</p>
+                        <div class="flex items-end gap-2">
+                            <p id="kpi-pending-count" class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 mt-1">{{ kpi_pending_requests }}</p>
+                            {% if kpi_pending_requests > 0 %}
+                            <span id="kpi-pending-badge" class="text-[10px] lg:text-xs font-semibold text-red-500 mb-1 animate-pulse">Ação Necessária</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="p-2 lg:p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full text-yellow-600 dark:text-yellow-400">
+                        <span class="material-icons-outlined text-2xl lg:text-3xl">person_add</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions / Notes -->
+            <section id="anotacoes-rapidas" class="card card-widget glassmorphism-card group" aria-labelledby="anotacoes-title">
+                <div class="flex items-center justify-between mb-3 cursor-pointer" onclick="toggleWidget('anotacoes-content', this)">
+                    <h2 id="anotacoes-title" class="card-title">
+                        <span class="material-icons-outlined text-yellow-500">sticky_note_2</span>
+                        Bloco de Notas
+                    </h2>
+                    <div class="flex items-center text-sm gap-2">
+                        <span id="notesSaveStatus" class="text-gray-500 dark:text-gray-400 transition-opacity duration-300 opacity-0"></span>
+                        <span class="material-icons-outlined transform transition-transform duration-300 group-hover:text-gray-600 dark:group-hover:text-gray-300" id="anotacoes-arrow">expand_more</span>
+                    </div>
+                </div>
+                <div id="anotacoes-content" class="overflow-hidden transition-all duration-300 widget-content">
+                    <textarea id="notesTextarea" class="input-field-transparent w-full h-32" placeholder="Digite suas anotações... Elas serão salvas automaticamente."></textarea>
+                </div>
+            </section>
+
+             <section id="proximos-eventos" class="card card-widget glassmorphism-card flex flex-col group" aria-labelledby="eventos-title">
+                <div class="flex items-center justify-between mb-3 cursor-pointer" onclick="toggleWidget('eventos-content', this)">
+                    <h2 id="eventos-title" class="card-title">
+                        <span class="material-icons-outlined text-purple-500">event</span>
+                        Agenda CTM
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        <button id="dashboard-novo-evento-btn" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded flex items-center transition-colors shadow-sm" title="Adicionar novo evento" onclick="event.stopPropagation()">
+                             <span class="material-icons-outlined text-sm mr-1">add</span> Novo
+                        </button>
+                        <span class="material-icons-outlined transform transition-transform duration-300 group-hover:text-gray-600 dark:group-hover:text-gray-300" id="eventos-arrow">expand_more</span>
+                    </div>
+                </div>
+                <div id="eventos-content" class="flex-grow overflow-hidden transition-all duration-300 widget-content">
+                    <ul id="dashboard-eventos-lista" class="mt-4 space-y-3 overflow-y-auto max-h-48 custom-scrollbar">
+                    </ul>
+                    <p id="dashboard-eventos-empty" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4 hidden">
+                        Nenhum evento agendado.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Column (Status, Links) -->
+        <div class="space-y-6">
+            
+             <!-- System Status Widget -->
+            <section id="system-status-widget" class="card card-widget glassmorphism-card group" aria-labelledby="status-title">
+                <div class="flex justify-between items-center mb-4 cursor-pointer" onclick="toggleWidget('services-content', this)">
+                    <h2 id="status-title" class="card-title">
+                        <span class="material-icons-outlined text-gray-500">dns</span>
+                        Status dos Serviços
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        {% if is_super_admin %}
+                        <button onclick="event.stopPropagation(); openServiceModal('add')" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded flex items-center transition-colors shadow-sm">
+                            <span class="material-icons-outlined text-sm mr-1">add</span> Novo
+                        </button>
+                        {% endif %}
+                         <span class="material-icons-outlined transform transition-transform duration-300 group-hover:text-gray-600 dark:group-hover:text-gray-300" id="services-arrow">expand_more</span>
+                    </div>
+                </div>
+                
+                <div id="services-content" class="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar transition-all duration-300 widget-content">
+                    <div id="services-list">
+                        {% for service in services %}
+                        <div class="flex items-center justify-between text-sm group/item" data-id="{{ service.id }}">
+                            <span class="text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                                 <span class="w-2 h-2 rounded-full 
+                                    {% if service.status == 'operando' %}bg-green-500
+                                    {% elif service.status == 'instavel' %}bg-yellow-500 animate-pulse
+                                    {% else %}bg-red-500{% endif %}">
+                                 </span> 
+                                 {{ service.name }}
+                            </span>
+                            
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium text-xs 
+                                    {% if service.status == 'operando' %}text-green-600 dark:text-green-400
+                                    {% elif service.status == 'instavel' %}text-yellow-600 dark:text-yellow-400
+                                    {% else %}text-red-500 dark:text-red-400{% endif %}">
+                                    {{ service.get_status_display }}
+                                </span>
+                                
+                                {% if is_super_admin %}
+                                <div class="flex items-center transition-opacity">
+                                    <button onclick="openServiceModal('edit', '{{ service.id|unlocalize }}', '{{ service.name }}', '{{ service.status }}')" class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-blue-500">
+                                        <span class="material-icons-outlined text-sm">edit</span>
+                                    </button>
+                                    <button onclick="deleteService('{{ service.id|unlocalize }}')" class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-red-500">
+                                        <span class="material-icons-outlined text-sm">delete</span>
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-xs text-center text-gray-500 py-2">Nenhum serviço monitorado.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+             <section id="links-rapidos" class="card card-widget glassmorphism-card group" aria-labelledby="links-rapidos-title">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleWidget('links-content', this)">
+                    <h2 id="links-rapidos-title" class="card-title">
+                        <span class="material-icons-outlined text-blue-500">link</span>
+                        Acesso Rápido
+                    </h2>
+                     <span class="material-icons-outlined transform transition-transform duration-300 group-hover:text-gray-600 dark:group-hover:text-gray-300" id="links-arrow">expand_more</span>
+                </div>
+                <div id="links-content" class="transition-all duration-300 widget-content">
+                    <ul class="mt-3 space-y-2 text-sm">
+                        <li><a href="http://intranet/intranet/" target="_blank" rel="noopener noreferrer" class="link-item py-1"><span class="material-icons-outlined text-sm">open_in_new</span> Intranet CTM</a></li>
+                        <li><a href="https://chamados/index.php" class="link-item py-1"><span class="material-icons-outlined text-sm">support_agent</span> Helpdesk TI</a></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- Service Modal -->
+<div id="service-modal" class="modal">
+    <div class="modal-content glassmorphism-modal" style="max-width: 400px;">
+        <button type="button" class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" onclick="closeServiceModal()">
+            <span class="material-icons-outlined text-2xl">close</span>
+        </button>
+        <h2 id="service-modal-title" class="text-lg font-bold mb-4">Gerenciar Serviço</h2>
+        <form id="service-form" onsubmit="handleServiceSubmit(event)">
+            <input type="hidden" id="service-id">
+            <input type="hidden" id="service-action">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nome do Serviço</label>
+                <input type="text" id="service-name" class="input-field" required>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-1">Status</label>
+                <select id="service-status" class="input-field">
+                    <option value="operando">Operando</option>
+                    <option value="instavel">Instável</option>
+                    <option value="offline">Offline</option>
+                </select>
+            </div>
+            
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeServiceModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="dashboardEventoModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="dashboardEventoModalTitle">
+    <div class="modal-content glassmorphism-modal max-w-md">
+        <button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" id="closeDashboardEventoModal" aria-label="Fechar">
+            <span class="material-icons-outlined text-2xl">close</span>
+        </button>
+        <h2 id="dashboardEventoModalTitle" class="modal-title">Novo Evento</h2>
+        <form id="dashboard-evento-form">
+            <input type="hidden" id="dashboard-evento-id">
+            <div class="space-y-4">
+                <div>
+                    <label for="dashboard-evento-title" class="label-text">Título:</label>
+                    <input type="text" id="dashboard-evento-title" class="input-field" required>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="dashboard-evento-date" class="label-text">Data:</label>
+                        <input type="date" id="dashboard-evento-date" class="input-field" required>
+                    </div>
+                    <div>
+                        <label for="dashboard-evento-time" class="label-text">Hora Início:</label>
+                        <input type="time" id="dashboard-evento-time" class="input-field" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="dashboard-evento-desc" class="label-text">Descrição (Opcional):</label>
+                    <textarea id="dashboard-evento-desc" class="input-field" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="mt-6 text-right">
+                <button type="submit" id="dashboard-evento-salvar" class="btn btn-primary">Salvar Evento</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+    <!-- Feature Modals -->
+    {% include 'partials/congestionamento_modal.html' %}
+    {% include 'partials/ouvidorias_modal.html' %}
+    {% include 'partials/aprovar_registros_modal.html' %}
+    {% include 'partials/parametros_remuneracao_modal.html' %}
+    {% include 'partials/dados_frota_remuneracao_modal.html' %}
+    {% include 'partials/cota_oleo_diesel_modal.html' %}
+
+    <!-- Mobile Footer (Logos & Copyright) -->
+    <div class="lg:hidden mt-8 mb-24 flex flex-col items-center justify-center space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+        <div class="flex items-center gap-6">
+            <!-- Main Logo (Logo dela) -->
+            <img src="{% static 'images/ctm.png' %}" alt="Grande Recife" class="h-24 w-auto object-contain opacity-90">
+            
+            <!-- Separator -->
+            <div class="h-24 w-px bg-gray-300 dark:bg-gray-600"></div>
+
+            <!-- Stacked Logos (RCB Only) -->
+            <div class="flex flex-col items-center justify-center gap-1">
+                <img src="{% static 'images/rcb_logo.png' %}" alt="RCB" class="h-48 w-auto object-contain">
+            </div>
+        </div>
+        
+        <p class="text-[10px] text-gray-500 dark:text-gray-400 text-center max-w-[280px] leading-tight font-medium">
+            Todos os direitos reservados do RCB - Remuneração, Custos e Bilhetagem.
+        </p>
+    </div>
+
+    <!-- CTM Logo (Desktop Only) - Forced Visibility -->
+
+    <!-- CTM Logo (Desktop Only) - Forced Visibility -->
+    <div class="desktop-logo-forced">
+        <img src="{% static 'images/ctm.png' %}" alt="Grande Recife CTM" style="width: 320px; height: auto; opacity: 0.8;" class="hover:opacity-100 select-none dark:brightness-0 dark:invert">
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <!-- External Libs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>window.jsPDF = window.jspdf.jsPDF;</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Portal Widgets CSS (Fix Logo Visibility - Inlined for reliability) -->
+    <!-- <link rel="stylesheet" href="{% static 'css/portal/widgets.css' %}"> -->
+    <style>
+        .desktop-logo-forced {
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            z-index: 9999 !important;
+            display: block !important;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 1024px) {
+            .desktop-logo-forced {
+                display: none !important;
+            }
+        }
+        /* Dark mode logo adjustment */
+        body.dark-theme .desktop-logo-forced img {
+            filter: brightness(0) invert(1);
+            opacity: 0.9 !important;
+        }
+    </style>
+
+    <!-- Feature CSS -->
+    <link rel="stylesheet" href="{% static 'css/congestionamento.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ouvidorias.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aprovar_registros.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cota_oleo_diesel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/parametros_remuneracao.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dados_frota_remuneracao.css' %}">
+
+{% endblock %}
+
+{% block extra_js %}
+    <!-- Feature JS -->
+    <script src="{% static 'js/congestionamento.js' %}"></script>
+    <script src="{% static 'js/ouvidorias.js' %}"></script>
+    <script src="{% static 'js/aprovar_registros_modal.js' %}?v=4"></script>
+    <script src="{% static 'js/cota_oleo_diesel.js' %}"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Portal Logic -->
+    <script src="{% static 'js/portal_de_conexoes.js' %}"></script>
+{% endblock %}
+

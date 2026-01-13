@@ -1,0 +1,300 @@
+<div id="modal-cota_oleo_diesel" class="modal feature-modal" aria-hidden="true" style="z-index: 60;">
+    <div class="modal-content glassmorphism-modal w-full flex flex-col p-0 overflow-hidden" style="max-width: 1000px; max-height: 90vh; margin: 4vh auto;">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 shrink-0">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                    <span class="material-icons-outlined text-orange-500">local_gas_station</span>
+                    Cota de Óleo Diesel
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Consolidação e processamento de cota mensal.</p>
+            </div>
+            <button class="modal-close-btn relative top-0 right-0 translate-x-0 translate-y-0" onclick="closeFeatureModal('modal-cota_oleo_diesel')" aria-label="Fechar">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="px-6 pb-6 pt-2 overflow-y-auto flex-1 custom-scrollbar">
+            
+            <div id="flash-messages-container-cota" class="mb-2 space-y-3"></div>
+
+            <div class="card p-0 relative shadow-none border-none bg-transparent">
+                
+                <div id="loading-indicator-cota" class="loading-overlay hidden absolute inset-0 bg-white/80 dark:bg-gray-900/80 z-20 flex flex-col items-center justify-center rounded-xl">
+                    <div class="spinner border-4 border-orange-500 border-t-transparent rounded-full w-12 h-12 animate-spin mb-3"></div>
+                    <span class="font-semibold text-gray-700 dark:text-gray-200">Processando...</span>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="cota-tabs" role="tablist">
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-orange-500 text-orange-600 dark:text-orange-500 active-tab" id="files-tab" data-tabs-target="#cota-files-content" type="button" role="tab" aria-selected="true" onclick="switchTabCota(this, 'cota-files-content')">
+                                1. Arquivos Principais
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="params-tab" data-tabs-target="#cota-params-content" type="button" role="tab" aria-selected="false" onclick="switchTabCota(this, 'cota-params-content')">
+                                2. Parâmetros e PCO
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="rateamento-tab" data-tabs-target="#cota-rateamento-content" type="button" role="tab" aria-selected="false" onclick="switchTabCota(this, 'cota-rateamento-content')">
+                                3. Rateamento
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="output-tab" data-tabs-target="#cota-output-content" type="button" role="tab" aria-selected="false" onclick="switchTabCota(this, 'cota-output-content')">
+                                4. Saída
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab Content: Arquivos -->
+                <div id="cota-files-content" role="tabpanel" aria-labelledby="files-tab">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Mês Passado -->
+                        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                            <h3 class="font-semibold mb-3 dark:text-gray-200 flex items-center">
+                                <span class="material-icons-outlined text-gray-500 mr-2">history</span>
+                                Mês Passado (Referência Anterior)
+                            </h3>
+                            <div class="file-input-container border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white dark:hover:bg-gray-800 transition-colors" id="cota-passado-dropzone">
+                                <span class="material-icons-outlined text-gray-400 mb-2">upload_file</span>
+                                <label for="cota-passado-input" class="text-sm font-medium text-blue-600 hover:underline cursor-pointer mb-1">Selecionar .xls</label>
+                                <input type="file" id="cota-passado-input" name="cota_passado_files" class="hidden" multiple accept=".xls">
+                            </div>
+                            <div class="mt-3 p-2 bg-white dark:bg-gray-900/50 rounded border border-gray-100 dark:border-gray-700 min-h-[40px] max-h-[100px] overflow-y-auto custom-scrollbar" id="cota-passado-preview">
+                                <span class="text-gray-400 italic text-xs flex justify-center">Nenhum arquivo.</span>
+                            </div>
+                        </div>
+
+                        <!-- Mês Atual -->
+                        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700 border-l-4 border-l-orange-500">
+                            <h3 class="font-semibold mb-3 dark:text-gray-200 flex items-center">
+                                <span class="material-icons-outlined text-orange-500 mr-2">today</span>
+                                Mês de Referência (Atual)
+                            </h3>
+                            <div class="file-input-container border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white dark:hover:bg-gray-800 transition-colors" id="cota-atual-dropzone">
+                                <span class="material-icons-outlined text-gray-400 mb-2">upload_file</span>
+                                <label for="cota-atual-input" class="text-sm font-medium text-orange-600 hover:underline cursor-pointer mb-1">Selecionar .xls</label>
+                                <input type="file" id="cota-atual-input" name="cota_atual_files" class="hidden" multiple accept=".xls">
+                            </div>
+                             <div class="mt-3 p-2 bg-white dark:bg-gray-900/50 rounded border border-gray-100 dark:border-gray-700 min-h-[40px] max-h-[100px] overflow-y-auto custom-scrollbar" id="cota-atual-preview">
+                                <span class="text-gray-400 italic text-xs flex justify-center">Nenhum arquivo.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Parâmetros -->
+                <div id="cota-params-content" class="hidden" role="tabpanel" aria-labelledby="params-tab">
+                    
+                    <!-- Rendimento PCO -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-100 dark:border-blue-800/50 mb-6">
+                        <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-4 flex items-center">
+                            <span class="material-icons-outlined mr-2">network_check</span>
+                            Rendimento PCO
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Arquivo PCO (.xls)</label>
+                                <div class="flex gap-2">
+                                    <div class="flex-grow bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300 truncate" id="cota-pco-filename">
+                                        Nenhum selecionado
+                                    </div>
+                                    <label for="cota-pco-input" class="btn btn-secondary px-4 cursor-pointer">Buscar</label>
+                                    <input type="file" id="cota-pco-input" class="hidden" accept=".xls">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mês</label>
+                                    <select id="cota-pco-mes" class="input-field bg-white !py-2 !text-sm">
+                                        <option value="">Sel.</option>
+                                        <option>JAN</option><option>FEV</option><option>MAR</option><option>ABR</option>
+                                        <option>MAI</option><option>JUN</option><option>JUL</option><option>AGO</option>
+                                        <option>SET</option><option>OUT</option><option>NOV</option><option>DEZ</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quinzena</label>
+                                    <select id="cota-pco-quinzena" class="input-field bg-white !py-2 !text-sm">
+                                        <option value="">Sel.</option>
+                                        <option>1ª</option><option>2ª</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ano</label>
+                                    <input type="number" id="cota-pco-ano" class="input-field bg-white !py-2 !text-sm" placeholder="Ex: 2025" value="{% now 'Y' %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contagem de Dias -->
+                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700 mb-6">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <span class="material-icons-outlined mr-2">calendar_today</span>
+                            Contagem de Dias no Período
+                        </h3>
+                        <div class="grid grid-cols-3 gap-6 max-w-lg">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Dias Úteis (DUT)</label>
+                                <input type="number" id="cota-dias-dut" class="input-field bg-white !text-center font-bold" value="0" min="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sábados (SAB)</label>
+                                <input type="number" id="cota-dias-sab" class="input-field bg-white !text-center font-bold" value="0" min="0">
+                            </div>
+                             <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Domingos (DOM)</label>
+                                <input type="number" id="cota-dias-dom" class="input-field bg-white !text-center font-bold" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Extras (CNO/MOB) -->
+                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <span class="material-icons-outlined mr-2">calculate</span>
+                            Arquivos Base para Cálculo (Opcional)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Base Cálculo CNO (.xls)</label>
+                                <div class="flex gap-2">
+                                    <div class="flex-grow bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300 truncate" id="cota-cno-filename">
+                                        Nenhum selecionado
+                                    </div>
+                                    <label for="cota-cno-input" class="btn btn-secondary px-4 cursor-pointer flex items-center">
+                                        <span class="material-icons-outlined text-sm mr-1">upload</span> Buscar
+                                    </label>
+                                    <input type="file" id="cota-cno-input" class="hidden" accept=".xls, .xlsx">
+                                </div>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Base Cálculo MOB (.xls)</label>
+                                <div class="flex gap-2">
+                                    <div class="flex-grow bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300 truncate" id="cota-mob-filename">
+                                        Nenhum selecionado
+                                    </div>
+                                    <label for="cota-mob-input" class="btn btn-secondary px-4 cursor-pointer flex items-center">
+                                         <span class="material-icons-outlined text-sm mr-1">upload</span> Buscar
+                                    </label>
+                                    <input type="file" id="cota-mob-input" class="hidden" accept=".xls, .xlsx">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Rateamento -->
+                <div id="cota-rateamento-content" class="hidden" role="tabpanel" aria-labelledby="rateamento-tab">
+                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                        <div class="flex items-start gap-4 mb-6">
+                             <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg shrink-0 text-purple-600 dark:text-purple-400">
+                                <span class="material-icons-outlined text-2xl">pie_chart</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">Rateamento de Garagens</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Carregue o arquivo de configuração (.xlsx) contendo a distribuição de litros por garagem, CNPJ e postos.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Arquivo de Configuração de Rateamento</label>
+                            <div class="flex gap-2">
+                                <div class="flex-grow bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-600 dark:text-gray-300 truncate" id="cota-rateamento-filename">
+                                    Nenhum arquivo selecionado (Opcional)
+                                </div>
+                                <label for="cota-rateamento-input" class="btn btn-primary px-4 cursor-pointer flex items-center gap-2">
+                                    <span class="material-icons-outlined text-sm">upload</span> Carregar
+                                </label>
+                                <input type="file" id="cota-rateamento-input" class="hidden" accept=".xlsx, .xls">
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                O arquivo deve conter colunas como: <strong>Empresa, Garagem_ID, Litros_Garagem, Litros_Companhia, Posto, CNPJ, Inscrição_Estadual</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Saída -->
+                <div id="cota-output-content" class="hidden" role="tabpanel" aria-labelledby="output-tab">
+                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto mt-4">
+                         <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome do Arquivo de Saída</label>
+                            <div class="flex shadow-sm">
+                                <span class="inline-flex items-center px-3 text-sm text-gray-500 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600">
+                                    .xlsx
+                                </span>
+                                <input type="text" id="cota-filename" class="input-field rounded-none rounded-r-lg flex-1 min-w-0 block w-full bg-white" placeholder="Cota_De_Oleo_Diesel_Final" value="Cota_Oleo_Diesel_Calculada_{% now 'Y' %}">
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg flex gap-3 text-sm text-blue-800 dark:text-blue-300 mb-8 border border-blue-100 dark:border-blue-800/30">
+                            <span class="material-icons-outlined shrink-0 text-blue-500">info</span>
+                            <p>O processamento irá consolidar os arquivos do mês atual, comparar com o mês passado (se fornecido), aplicar os rendimentos do PCO e gerar o relatório final formatado.</p>
+                        </div>
+
+                        <div class="flex justify-end gap-3 border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <button type="button" onclick="clearCotaForm()" class="btn btn-ghost text-red-500 hover:bg-red-50">
+                                Limpar Tudo
+                            </button>
+                            <button type="button" onclick="processarCotaOleo(event)" id="cota-process-btn" class="btn btn-primary px-8 py-2.5 shadow-lg shadow-orange-500/20">
+                                <span class="material-icons-outlined mr-2">play_arrow</span>
+                                Processar e Gerar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTabCota(btn, targetId) {
+        // Reset Tabs
+        document.querySelectorAll('#cota-tabs button').forEach(b => {
+             b.classList.remove('active-tab', 'border-orange-500', 'text-orange-600', 'dark:text-orange-500');
+             b.classList.add('border-transparent', 'hover:text-gray-600', 'dark:hover:text-gray-300');
+             b.setAttribute('aria-selected', 'false');
+        });
+        
+        // Hide Contents
+        const contents = ['cota-files-content', 'cota-params-content', 'cota-rateamento-content', 'cota-output-content'];
+        contents.forEach(id => document.getElementById(id).classList.add('hidden'));
+
+        // Activate Tab
+        btn.classList.remove('border-transparent', 'hover:text-gray-600', 'dark:hover:text-gray-300');
+        btn.classList.add('active-tab', 'border-orange-500', 'text-orange-600', 'dark:text-orange-500');
+        btn.setAttribute('aria-selected', 'true');
+
+        // Show Content
+        document.getElementById(targetId).classList.remove('hidden');
+    }
+
+    function clearCotaForm() {
+        // Reset Logic to be implemented in JS controller, this just resets UI basics if needed
+        document.querySelectorAll('input[type="file"]').forEach(i => i.value = '');
+        document.getElementById('cota-passado-preview').innerHTML = '<span class="text-gray-400 italic text-xs flex justify-center">Nenhum arquivo.</span>';
+        document.getElementById('cota-atual-preview').innerHTML = '<span class="text-gray-400 italic text-xs flex justify-center">Nenhum arquivo.</span>';
+        document.getElementById('cota-rateamento-filename').textContent = 'Nenhum arquivo selecionado (Opcional)';
+        document.getElementById('cota-cno-filename').textContent = 'Nenhum selecionado';
+        document.getElementById('cota-mob-filename').textContent = 'Nenhum selecionado';
+        document.getElementById('cota-pco-filename').textContent = 'Nenhum selecionado';
+        // Reset Selects...
+        // Could call App Controller clear method from here
+        if (window.CotaApp) window.CotaApp.resetForm();
+    }
+</script>

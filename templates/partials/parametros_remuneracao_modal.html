@@ -1,0 +1,356 @@
+<div id="modal-parametros-remuneracao" class="modal feature-modal" aria-hidden="true" style="z-index: 60;">
+    <div class="modal-content glassmorphism-modal w-full modal-xl-custom flex flex-col p-0 overflow-hidden" style="max-width: 95vw; height: 90vh;">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 shrink-0">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Parâmetros de Remuneração</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Gerenciamento dos parâmetros de remuneração do sistema.</p>
+            </div>
+            <button class="modal-close-btn" onclick="closeFeatureModal('modal-parametros-remuneracao')" aria-label="Fechar">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+            
+            <!-- Filters Section -->
+            <div class="mb-6 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <!-- Line 1: Ano, Mês, Quinzena -->
+                <div class="flex flex-wrap items-center gap-4 mb-4">
+                    <!-- Ano -->
+                    <div class="flex items-center gap-2">
+                        <label for="param-ano" class="text-sm font-medium text-gray-700 dark:text-gray-300">Ano</label>
+                        <input type="number" id="param-ano" class="input-field !py-1 !px-2 !w-20 text-center" value="2025">
+                    </div>
+
+                    <!-- Mês -->
+                    <div class="flex items-center gap-2">
+                        <label for="param-mes" class="text-sm font-medium text-gray-700 dark:text-gray-300">Mês</label>
+                        <select id="param-mes" class="input-field !py-1 !px-2 !w-32">
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11" selected>Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+
+                    <!-- Quinzena -->
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Quinzena</span>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" id="quinzena-1" name="quinzena" value="1" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500">
+                            <label for="quinzena-1" class="text-sm font-medium text-gray-700 dark:text-gray-300">1</label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" id="quinzena-2" name="quinzena" value="2" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500" checked>
+                            <label for="quinzena-2" class="text-sm font-medium text-gray-700 dark:text-gray-300">2</label>
+                        </div>
+                    </div>
+
+                    <!-- Todas as Quinzenas -->
+                    <div class="flex items-center gap-2 ml-4">
+                        <input type="checkbox" id="todas-quinzenas" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500">
+                        <label for="todas-quinzenas" class="text-sm font-medium text-gray-700 dark:text-gray-300">Apresentar todas as quinzenas</label>
+                    </div>
+
+                    <!-- Navigation Arrows -->
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-green-600">
+                            <span class="material-icons-outlined">arrow_circle_left</span>
+                        </button>
+                        <button class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-green-600">
+                            <span class="material-icons-outlined">arrow_circle_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Line 2: Operador, Linha -->
+                <div class="flex flex-wrap items-center gap-4">
+                    <!-- Operador -->
+                    <div class="flex items-center gap-2 flex-1 max-w-sm">
+                        <label for="param-operador" class="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[60px]">Operador</label>
+                        <select id="param-operador" class="input-field !py-1 !px-2 w-full">
+                            <option value="TODOS" selected>TODOS</option>
+                            <option value="CNO">CNO</option>
+                            <option value="MOB">MOB</option>
+                        </select>
+                    </div>
+
+                    <!-- Linha -->
+                    <div class="flex items-center gap-2 flex-1 max-w-sm">
+                        <label for="param-linha" class="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[40px]">Linha</label>
+                        <select id="param-linha" class="input-field !py-1 !px-2 w-full">
+                            <option value="TODAS" selected>TODAS</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Header -->
+            <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="params-tabs" role="tablist">
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-orange-500 text-orange-600 dark:text-orange-500" 
+                                    id="tab-sistema-btn" 
+                                    onclick="switchTabParametros('tab-sistema')" 
+                                    type="button" role="tab">
+                                Parâmetros do Sistema
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                    id="tab-operador-btn" 
+                                    onclick="switchTabParametros('tab-operador')" 
+                                    type="button" role="tab">
+                                Parâmetros do Operador
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                    id="tab-obs-btn" 
+                                    onclick="switchTabParametros('tab-obs')" 
+                                    type="button" role="tab">
+                                Observações do Operador
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                    id="tab-calendario-btn" 
+                                    onclick="switchTabParametros('tab-calendario')" 
+                                    type="button" role="tab">
+                                Calendário Operacional
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                    id="tab-integracao-btn" 
+                                    onclick="switchTabParametros('tab-integracao')" 
+                                    type="button" role="tab">
+                                % Integração SEI
+                            </button>
+                        </li>
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                    id="tab-brt-btn" 
+                                    onclick="switchTabParametros('tab-brt')" 
+                                    type="button" role="tab">
+                                % BRT nas Estações
+                            </button>
+                        </li>
+                    </ul>
+
+                     <!-- Toolbar Actions -->
+                    <div class="flex items-center gap-2 pb-2">
+                        <!-- Navigation (Matches other modal style if needed, but not explicitly asked, keeping CRUD focus) -->
+                        <div class="flex items-center border-r border-gray-300 dark:border-gray-600 pr-2 mr-2">
+                             <button class="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded" title="Primeiro">
+                                <span class="material-icons-outlined text-lg">first_page</span>
+                            </button>
+                            <button class="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded" title="Anterior">
+                                 <span class="material-icons-outlined text-lg">chevron_left</span>
+                            </button>
+                            <button class="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded" title="Próximo">
+                                 <span class="material-icons-outlined text-lg">chevron_right</span>
+                            </button>
+                            <button class="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded" title="Último">
+                                 <span class="material-icons-outlined text-lg">last_page</span>
+                            </button>
+                        </div>
+        
+                        <!-- CRUD -->
+                        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                             <button class="p-1.5 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded bg-white shadow-sm" title="Adicionar">
+                                <span class="material-icons-outlined text-sm">add</span>
+                            </button>
+                            <button class="p-1.5 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Excluir">
+                                <span class="material-icons-outlined text-sm">remove</span>
+                            </button>
+                             <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                            <button class="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Editar">
+                                <span class="material-icons-outlined text-sm">edit</span> Editar
+                            </button>
+                            <button class="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Salvar">
+                                <span class="material-icons-outlined text-sm">save</span> Salvar
+                            </button>
+                            <button class="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Cancelar">
+                                <span class="material-icons-outlined text-sm">close</span> Cancelar
+                            </button>
+                        </div>
+
+                         <!-- Edit Observations -->
+                         <button class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg shadow-sm transition-colors dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
+                            <span class="material-icons-outlined text-sm">edit_note</span> Editar Observações
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: 1. Parâmetros do Sistema -->
+            <div id="tab-sistema" class="tab-content-param block">
+                <div class="table-responsive shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Ano</th>
+                                <th scope="col" class="px-6 py-3">Mês</th>
+                                <th scope="col" class="px-6 py-3">Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Descrição da Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Data Fechamento</th>
+                                <th scope="col" class="px-6 py-3">Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados virão via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content: 2. Parâmetros do Operador -->
+            <div id="tab-operador" class="tab-content-param hidden">
+                <div class="table-responsive shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Operador</th>
+                                <th scope="col" class="px-6 py-3">Ano</th>
+                                <th scope="col" class="px-6 py-3">Mês</th>
+                                <th scope="col" class="px-6 py-3">Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Descrição da Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Frota Reserva (%)</th>
+                                <th scope="col" class="px-6 py-3">Valor de Multas (R$)</th>
+                                <th scope="col" class="px-6 py-3">Diferença Vales (R$)</th>
+                                <th scope="col" class="px-6 py-3">Diferença Estudantes (R$)</th>
+                                <th scope="col" class="px-6 py-3">Receita Extra (R$)</th>
+                                <th scope="col" class="px-6 py-3">Adiantamento VT (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados virão via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content: 3. Observações do Operador -->
+            <div id="tab-obs" class="tab-content-param hidden">
+                <div class="table-responsive shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Operador</th>
+                                <th scope="col" class="px-6 py-3">Ano</th>
+                                <th scope="col" class="px-6 py-3">Mês</th>
+                                <th scope="col" class="px-6 py-3">Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Descrição da Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados virão via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content: 4. Calendário Operacional -->
+            <div id="tab-calendario" class="tab-content-param hidden">
+                <div class="table-responsive shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Data de Operação</th>
+                                <th scope="col" class="px-6 py-3">Descrição da Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Dia-Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados virão via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content: 5. Percentual de Integração SEI -->
+            <div id="tab-integracao" class="tab-content-param hidden">
+                <div class="table-responsive shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Operador</th>
+                                <th scope="col" class="px-6 py-3">Linha</th>
+                                <th scope="col" class="px-6 py-3">Data Início de Validade</th>
+                                <th scope="col" class="px-6 py-3">Descrição da Quinzena</th>
+                                <th scope="col" class="px-6 py-3">% Passageiros Integrados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados virão via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content: 6. Percentual de BRT nas Estações -->
+            <div id="tab-brt" class="tab-content-param hidden">
+                <div class="table-responsive shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Operador</th>
+                                <th scope="col" class="px-6 py-3">Linha</th>
+                                <th scope="col" class="px-6 py-3">Data Início de Validade</th>
+                                <th scope="col" class="px-6 py-3">Descrição da Quinzena</th>
+                                <th scope="col" class="px-6 py-3">Percentual das Estações (%)</th>
+                                <th scope="col" class="px-6 py-3">Percentual de Passageiros Integrados (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados virão via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTabParametros(tabId) {
+        // Hide all contents
+        document.querySelectorAll('.tab-content-param').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        
+        // Show target content
+        document.getElementById(tabId).classList.remove('hidden');
+        document.getElementById(tabId).classList.add('block');
+        
+        // Update Buttons style
+        document.querySelectorAll('#params-tabs button').forEach(btn => {
+            // Reset to inactive
+            btn.classList.remove('text-orange-600', 'dark:text-orange-500', 'border-orange-500');
+            btn.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300', 'dark:hover:text-gray-300');
+        });
+        
+        // Optimize Active Button
+        const activeBtn = document.getElementById(tabId + '-btn');
+        if(activeBtn) {
+            activeBtn.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300', 'dark:hover:text-gray-300');
+            activeBtn.classList.add('text-orange-600', 'dark:text-orange-500', 'border-orange-500');
+        }
+    }
+</script>

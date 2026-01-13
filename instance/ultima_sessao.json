@@ -1,0 +1,234 @@
+{
+    "arquivos_passado": [
+        "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2025/Cota 12 DEZEMBRO 25/DADOS GPIS/DUT.xls",
+        "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2025/Cota 12 DEZEMBRO 25/DADOS GPIS/SAB.xls",
+        "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2025/Cota 12 DEZEMBRO 25/DADOS GPIS/DOM.xls"
+    ],
+    "arquivos_atual": [
+        "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2026/01 cota Janeiro 26/DADOS GPIS/DUT.xls",
+        "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2026/01 cota Janeiro 26/DADOS GPIS/S\u00c1B.xls",
+        "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2026/01 cota Janeiro 26/DADOS GPIS/DOM.xls"
+    ],
+    "caminho_pco": "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2026/01 cota Janeiro 26/FROTA POR TIPO 1a Q NOVEMBRO 2025.xls",
+    "mes_pco": "NOV",
+    "quinzena_pco": "1\u00aa",
+    "ano_pco": "2025",
+    "caminho_cno": "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2026/01 cota Janeiro 26/DADOS GPIS/Rede_CNO_Janeiro_2026_Com_Ferias_CORRIGIDO.xls",
+    "caminho_mob": "C:/Users/fslima/Desktop/Trabalho Atual/Banco de Dados DGFC CTM/Cota de \u00d3leo Diesel/2026/01 cota Janeiro 26/DADOS GPIS/MOB.xls",
+    "dias_dut": "20",
+    "dias_sab": "6",
+    "dias_dom": "5",
+    "reducao_boa": "0,00%",
+    "reducao_cax": "-5,00%",
+    "reducao_cno": "0,00%",
+    "reducao_csr": "-5,00%",
+    "reducao_eme": "-5,00%",
+    "reducao_glo": "0,00%",
+    "reducao_mob": "0,00%",
+    "reducao_sjt": "-5,00%",
+    "reducao_vml": "0,00%",
+    "pasta_destino": "C:/Users/fslima/Desktop",
+    "nome_arquivo_saida": "Cota de JANEIRO 2026 RCB",
+    "rateamento": {
+        "BOA": [
+            [
+                740000,
+                640000,
+                "DISLUB",
+                "1-80 BV",
+                "0146738-78"
+            ],
+            [
+                null,
+                100000,
+                "VIBRA",
+                "1-80 BV",
+                "0146738-78"
+            ],
+            [
+                490000,
+                100000,
+                "IPIRANGA",
+                "3-42 CD",
+                "0245761-07"
+            ],
+            [
+                null,
+                390000,
+                "VIBRA",
+                "3-42 CD",
+                "0245761-07"
+            ]
+        ],
+        "CAX": [
+            [
+                360000,
+                105000,
+                "DISLUB",
+                "1-83 OL",
+                "0439109-80"
+            ],
+            [
+                null,
+                255000,
+                "VIBRA",
+                "1-83 OL",
+                "0439109-80"
+            ],
+            [
+                480000,
+                145000,
+                "DISLUB",
+                "3-45 OL",
+                "0439109-80"
+            ],
+            [
+                null,
+                335000,
+                "RAIZEN",
+                "3-45 OL",
+                "0439109-80"
+            ]
+        ],
+        "CSR": [
+            [
+                360000,
+                220000,
+                "DISLUB",
+                "1-09 RE",
+                "0871643-96 "
+            ],
+            [
+                null,
+                140000,
+                "VIBRA",
+                "1-09 RE",
+                "0871643-96 "
+            ]
+        ],
+        "CNO": [
+            [
+                615000,
+                555000,
+                "VIBRA",
+                "1-66 AL ",
+                "0169433-25"
+            ],
+            [
+                null,
+                60000,
+                "DISLUB",
+                "1-66 AL ",
+                "0169433-25"
+            ],
+            [
+                510000,
+                410000,
+                "VIBRA",
+                "1-39 OL",
+                "0195894-17"
+            ],
+            [
+                null,
+                100000,
+                "DISLUB",
+                "1-39 OL",
+                "0195894-17"
+            ],
+            [
+                190000,
+                190000,
+                "DISLUB",
+                "1-40 OL ",
+                "0146715-81"
+            ]
+        ],
+        "EME": [
+            [
+                920000,
+                275000,
+                "DISLUB",
+                "1-97 RE",
+                "0266413-56"
+            ],
+            [
+                null,
+                645000,
+                "VIBRA",
+                "1-97 RE",
+                "0266413-56"
+            ]
+        ],
+        "GLO": [
+            [
+                235000,
+                120000,
+                "RAIZEN",
+                "2-00 RE",
+                "0540613-77"
+            ],
+            [
+                null,
+                115000,
+                "VIBRA",
+                "2-00 RE",
+                "0540613-77"
+            ]
+        ],
+        "MOBI": [
+            [
+                510000,
+                255000,
+                "VIBRA",
+                "1-29 SLM",
+                "0581966-09"
+            ],
+            [
+                null,
+                255000,
+                "DISLUB",
+                "1-29 SLM",
+                "0581966-09"
+            ],
+            [
+                370000,
+                185000,
+                "VIBRA",
+                "2-00 RE",
+                "0664281-06"
+            ],
+            [
+                null,
+                185000,
+                "DISLUB",
+                "2-00 RE",
+                "0664281-06"
+            ]
+        ],
+        "SJT": [
+            [
+                460000,
+                280000,
+                "VIBRA",
+                "1-66 CSA",
+                "0175258-88"
+            ],
+            [
+                null,
+                180000,
+                "DISLUB",
+                "1-66 CSA",
+                "0175258-88"
+            ]
+        ],
+        "VML": [
+            [
+                95000,
+                95000,
+                "RAIZEN",
+                "1-00 RE",
+                "0523664-99"
+            ]
+        ]
+    }
+}

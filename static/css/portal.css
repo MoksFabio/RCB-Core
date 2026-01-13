@@ -1,0 +1,16 @@
+/* 
+   PORTAL.CSS - Main Bundle
+   Imports modularized styles from css/portal/ directory.
+*/
+
+/* 1. Core: Variables, Resets, Themes */
+@import url('portal/core.css');
+
+/* 2. Layout: Sidebar, Grid, Headers */
+@import url('portal/layout.css');
+
+/* 3. Components: Buttons, Cards, Inputs, Modals */
+@import url('portal/components.css');
+
+/* 4. Widgets: Specialized Feature Styles */
+@import url('portal/widgets.css');

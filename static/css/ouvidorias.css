@@ -1,0 +1,201 @@
+/*
+  Ouvidorias Feature CSS
+  Depends on: portal.css (for global variables, reset, and shared components)
+*/
+
+/* --- Global & Layout --- */
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.leading-tight { line-height: 1.25; }
+.tracking-wide { letter-spacing: 0.025em; }
+
+/* Custom Scrollbar for the modal content */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.5); border-radius: 20px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(107, 114, 128, 0.8); }
+
+/* --- Flash Messages --- */
+.flash-message {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  color: var(--cor-texto-claro);
+  border: 1px solid transparent;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.flash-message.success { background-color: var(--cor-success); border-color: #059669; }
+.flash-message.error { background-color: var(--cor-danger); border-color: #dc2626; }
+.flash-message.info { background-color: var(--cor-info); border-color: #2563eb; }
+
+.dark-theme .flash-message.success { background-color: var(--dark-cor-success); color: var(--dark-cor-fundo-card); }
+.dark-theme .flash-message.error { background-color: var(--dark-cor-danger); color: var(--dark-cor-fundo-card); }
+.dark-theme .flash-message.info { background-color: var(--dark-cor-info); color: var(--dark-cor-fundo-card); }
+
+/* --- Buttons --- */
+.btn-success {
+  background-color: var(--cor-success);
+  color: var(--cor-texto-claro);
+  border: none;
+}
+.btn-success:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.dark-theme .btn-success {
+  background-color: var(--dark-cor-success);
+  color: var(--dark-cor-fundo-card);
+}
+.dark-theme .btn-success:hover { background-color: #22c55e; }
+
+.dashed-border {
+    border: 1px dashed var(--cor-borda);
+    background-color: transparent;
+}
+.dashed-border:hover {
+    border-color: var(--cor-principal);
+    background-color: var(--cor-secundaria);
+    color: var(--cor-principal);
+}
+.dark-theme .dashed-border { border-color: var(--dark-cor-borda); }
+.dark-theme .dashed-border:hover {
+    border-color: var(--dark-cor-principal);
+    background-color: rgba(251, 146, 60, 0.1);
+    color: var(--dark-cor-principal);
+}
+
+
+/* --- Selection Cards --- */
+.selection-card {
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.selection-card:hover {
+    transform: translateY(-4px);
+}
+.selection-card:active {
+    transform: translateY(-2px);
+}
+
+/* --- Drop Zone --- */
+.drop-zone {
+  border: 2px dashed var(--cor-borda);
+  border-radius: 0.75rem; /* 12px */
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #f9fafb; /* gray-50 */
+}
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--cor-principal);
+  background-color: var(--cor-secundaria);
+}
+.drop-zone-text {
+  color: var(--cor-texto-secundario);
+  pointer-events: none;
+}
+
+.compact-drop-zone {
+    padding: 1rem;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drop-zone.file-loaded {
+  border-style: solid;
+  border-color: var(--cor-success);
+  background-color: #f0fdf4; /* green-50 */
+}
+.drop-zone.file-loaded .drop-zone-text {
+  color: var(--cor-success);
+  font-weight: 600;
+}
+
+.dark-theme .drop-zone {
+  background-color: rgba(31, 41, 55, 0.5);
+  border-color: var(--dark-cor-borda);
+}
+.dark-theme .drop-zone:hover {
+    background-color: rgba(251, 146, 60, 0.1); /* orange-500/10 */
+}
+.dark-theme .drop-zone.file-loaded {
+  background-color: rgba(74, 222, 128, 0.1);
+  border-color: var(--dark-cor-success);
+}
+.dark-theme .drop-zone.file-loaded .drop-zone-text {
+  color: var(--dark-cor-success);
+}
+
+/* --- Segmented Control (Assistant Selector) --- */
+.assistant-selector-btn {
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    color: var(--cor-texto-secundario);
+    font-weight: 500;
+}
+.assistant-selector-btn:hover {
+    color: var(--cor-texto-principal);
+    background-color: rgba(0,0,0,0.05);
+}
+.assistant-selector-btn.active {
+    background-color: white;
+    color: var(--cor-principal);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    font-weight: 600;
+}
+
+.dark-theme .assistant-selector-btn { color: var(--dark-cor-texto-secundario); }
+.dark-theme .assistant-selector-btn:hover { color: var(--dark-cor-texto-principal); background-color: rgba(255,255,255,0.05); }
+.dark-theme .assistant-selector-btn.active {
+    background-color: var(--dark-cor-fundo-card);
+    color: var(--dark-cor-principal);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* --- Period List --- */
+.period-item {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  border-radius: 4px;
+}
+.period-item:hover { background-color: rgba(0,0,0,0.05); }
+.period-item.selected {
+  background-color: var(--cor-secundaria);
+  color: var(--cor-principal);
+  font-weight: 600;
+}
+.dark-theme .period-item:hover { background-color: rgba(255,255,255,0.05); }
+.dark-theme .period-item.selected {
+  background-color: rgba(251, 146, 60, 0.15);
+  color: var(--dark-cor-principal);
+}
+
+/* --- Toggle Switch --- */
+.toggle-checkbox:checked { right: 0; border-color: var(--cor-success); }
+.toggle-checkbox:checked + .toggle-label { background-color: var(--cor-success); }
+.dark-theme .toggle-checkbox:checked { border-color: var(--dark-cor-success); }
+.dark-theme .toggle-checkbox:checked + .toggle-label { background-color: var(--dark-cor-success); }
+
+
+/* --- Misc --- */
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

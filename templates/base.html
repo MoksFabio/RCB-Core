@@ -1,0 +1,1068 @@
+{% load static %}
+{% load l10n %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Portal de Conexões - RCB{% endblock %}</title>
+
+    <link rel="icon" type="image/png" href="{% static 'images/rcb_logo.png' %}" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="{% static 'css/libs/tailwind.min.css' %}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" />
+    <link href="{% static 'css/libs/flowbite.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/libs/quill.snow.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/portal.css' %}?v=10" />
+    {% block extra_css %}{% endblock %}
+
+  </head>
+
+  <body class="min-h-screen">
+    <div id="app-container" class="flex h-screen">
+      <aside
+        id="sidebar"
+        class="fixed top-0 left-0 h-full z-30 flex flex-col transition-all duration-300"
+      >
+        <header
+          class="relative flex items-center justify-between h-20 px-4 shrink-0 mt-8"
+        >
+          <a
+            href="{% url 'portal_de_conexoes' %}"
+            class="sidebar-logo-link flex justify-center items-center"
+            id="sidebar-logo-link"
+          >
+            <img
+              src="{% static 'images/rcb_logo.png' %}"
+              alt="Logo RCB"
+              class="sidebar-logo transition-all duration-300 object-contain"
+            />
+          </a>
+        </header>
+
+        <nav class="flex-grow p-2 overflow-y-auto overflow-x-hidden">
+          <ul class="space-y-1">
+            <!-- Dashboard (Mantido) -->
+            <li>
+              <a
+                href="{% url 'portal_de_conexoes' %}"
+                class="menu-item {% if request.resolver_match.url_name == 'portal_de_conexoes' %}active{% endif %}"
+                data-page="dashboard"
+              >
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="menu-item-text">Dashboard</span>
+              </a>
+            </li>
+
+            <!-- Funções (Restored) -->
+            <li>
+              {% with url_name=request.resolver_match.url_name %}
+              <button
+                type="button"
+                class="menu-item w-full text-left"
+                data-collapse-toggle="dropdown-funcoes"
+              >
+                <span class="material-icons-outlined">widgets</span>
+                <span class="menu-item-text flex-1">Funções</span>
+                <span
+                  class="material-icons-outlined menu-item-text transition-transform duration-200"
+                  >expand_more</span
+                >
+              </button>
+              <ul
+                id="dropdown-funcoes"
+                class="{% if url_name in 'congestionamento,cota_de_oleo_diesel,ouvidorias,passageiro_integrado' %}block{% else %}hidden{% endif %} py-1 space-y-1 mt-1 ml-4 menu-item-dropdown"
+              >
+                <li>
+                  <a
+                    href="#"
+                    onclick="event.preventDefault(); openFeatureModal('modal-congestionamento');"
+                    class="menu-item {% if url_name == 'congestionamento' %}active{% endif %}"
+                    ><span class="material-icons-outlined">traffic</span
+                    ><span class="menu-item-text">Congestionamento</span></a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onclick="event.preventDefault(); openFeatureModal('modal-cota_oleo_diesel');"
+                    class="menu-item {% if url_name == 'cota_de_oleo_diesel' %}active{% endif %}"
+                    ><span class="material-icons-outlined"
+                      >local_gas_station</span
+                    ><span class="menu-item-text">Cota de Óleo Diesel</span></a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onclick="event.preventDefault(); openFeatureModal('modal-ouvidorias');"
+                    class="menu-item {% if url_name == 'ouvidorias' %}active{% endif %}"
+                    ><span class="material-icons-outlined">support_agent</span
+                    ><span class="menu-item-text">Ouvidorias</span></a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="menu-item {% if url_name == 'passageiro_integrado' %}active{% endif %}"
+                    ><span class="material-icons-outlined">group</span
+                    ><span class="menu-item-text">Passageiro Integrado</span></a
+                  >
+                </li>
+              </ul>
+              {% endwith %}
+            </li>
+
+            <!-- Remuneração -->
+            <li>
+              <button
+                type="button"
+                class="menu-item w-full text-left"
+                data-collapse-toggle="dropdown-remuneracao"
+              >
+                <span class="material-icons-outlined">attach_money</span>
+                <span class="menu-item-text flex-1">Remuneração</span>
+                <span class="material-icons-outlined menu-item-text transition-transform duration-200">expand_more</span>
+              </button>
+              <ul id="dropdown-remuneracao" class="hidden py-1 space-y-1 mt-1 ml-4 menu-item-dropdown">
+                <li><a href="#" onclick="event.preventDefault(); openFeatureModal('modal-parametros-remuneracao');" class="menu-item"><span class="menu-item-text">Parâmetros</span></a></li>
+                <li><a href="#" onclick="event.preventDefault(); openFeatureModal('modal-dados-frota-remuneracao');" class="menu-item"><span class="menu-item-text">Dados de Frota</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Bilhetagem | Efetivo</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Programação</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Cálculo da Remuneração</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Relatórios de Remuneração</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Relatórios SINFORME</span></a></li>
+              </ul>
+            </li>
+
+            <!-- CCT -->
+            <li>
+              <button
+                type="button"
+                class="menu-item w-full text-left"
+                data-collapse-toggle="dropdown-cct"
+              >
+                <span class="material-icons-outlined">work</span>
+                <span class="menu-item-text flex-1">CCT</span>
+                <span class="material-icons-outlined menu-item-text transition-transform duration-200">expand_more</span>
+              </button>
+              <ul id="dropdown-cct" class="hidden py-1 space-y-1 mt-1 ml-4 menu-item-dropdown">
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Parâmetros</span></a></li>
+                <li><a href="#" onclick="event.preventDefault(); openFeatureModal('modal-dados-frota-remuneracao');" class="menu-item"><span class="menu-item-text">Dados de Frota</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Bilhetagem | Efetivo</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Programação</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Cálculo da CCT</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Consultas</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Relatórios SINFORME</span></a></li>
+              </ul>
+            </li>
+
+            <!-- Fator de Utilização e Encargos Sociais -->
+            <li>
+              <button
+                type="button"
+                class="menu-item w-full text-left"
+                data-collapse-toggle="dropdown-fator"
+              >
+                <span class="material-icons-outlined">pie_chart</span>
+                <span class="menu-item-text flex-1 text-sm">Fator de Utilização...</span>
+                <span class="material-icons-outlined menu-item-text transition-transform duration-200">expand_more</span>
+              </button>
+              <ul id="dropdown-fator" class="hidden py-1 space-y-1 mt-1 ml-4 menu-item-dropdown">
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Fator de Utilização</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Encargos Sociais</span></a></li>
+                <li><a href="#" onclick="event.preventDefault()" class="menu-item"><span class="menu-item-text">Relatórios</span></a></li>
+              </ul>
+            </li>
+
+            <!-- Tabelas -->
+            <li>
+              <a href="#" onclick="event.preventDefault()" class="menu-item">
+                <span class="material-icons-outlined">table_chart</span>
+                <span class="menu-item-text">Tabelas</span>
+              </a>
+            </li>
+
+            <!-- Ferramentas -->
+            <li>
+              <button
+                type="button"
+                class="menu-item w-full text-left"
+                data-collapse-toggle="dropdown-ferramentas"
+              >
+                <span class="material-icons-outlined">build</span>
+                <span class="menu-item-text flex-1">Ferramentas</span>
+                <span class="material-icons-outlined menu-item-text transition-transform duration-200">expand_more</span>
+              </button>
+              <ul id="dropdown-ferramentas" class="hidden py-1 space-y-1 mt-1 ml-4 menu-item-dropdown">
+                <!-- Importação -->
+                <li>
+                    <button
+                        type="button"
+                        class="menu-item w-full text-left"
+                        data-collapse-toggle="dropdown-importacao"
+                    >
+                        <span class="material-icons-outlined text-sm">upload</span>
+                        <span class="menu-item-text flex-1 text-sm">Importação</span>
+                        <span class="material-icons-outlined menu-item-text transition-transform duration-200 text-sm">expand_more</span>
+                    </button>
+                    <ul id="dropdown-importacao" class="hidden py-1 space-y-1 mt-1 ml-4 menu-item-dropdown border-l border-gray-600 pl-2">
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Remuneração</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">CCT</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Custos</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Avaliação</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Fator Util. e Encargos</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Indicadores</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Indicadores QualiÔnibus</span></a></li>
+                    </ul>
+                </li>
+                
+                <!-- Exportação -->
+                <li>
+                    <button
+                        type="button"
+                        class="menu-item w-full text-left"
+                        data-collapse-toggle="dropdown-exportacao"
+                    >
+                        <span class="material-icons-outlined text-sm">download</span>
+                        <span class="menu-item-text flex-1 text-sm">Exportação</span>
+                        <span class="material-icons-outlined menu-item-text transition-transform duration-200 text-sm">expand_more</span>
+                    </button>
+                    <ul id="dropdown-exportacao" class="hidden py-1 space-y-1 mt-1 ml-4 menu-item-dropdown border-l border-gray-600 pl-2">
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Remuneração</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">CCT</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Custos</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Avaliação</span></a></li>
+                        <li><a href="#" onclick="event.preventDefault()" class="menu-item text-xs"><span class="menu-item-text">Fator Util. e Encargos</span></a></li>
+                    </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <footer class="p-2 shrink-0">
+          <div class="p-2 border-t border-gray-200 dark:border-gray-700">
+            <button
+              id="sidebar-toggle-btn"
+              class="menu-item w-full text-left mb-2"
+              aria-label="Recolher menu"
+            >
+              <span class="material-icons-outlined">menu_open</span>
+              <span class="menu-item-text">Recolher Menu</span>
+            </button>
+
+            <a
+              href="#"
+              onclick="event.preventDefault(); openFeatureModal('modal-aprovar_registros');"
+              class="menu-item"
+              data-page="aprovar_registros"
+            >
+              <span class="material-icons-outlined">fact_check</span>
+              <span class="menu-item-text">Aprovações</span>
+            </a>
+
+            <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+              {% csrf_token %}
+            </form>
+            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="menu-item menu-item-danger mt-1">
+              <span class="material-icons-outlined">logout</span>
+              <span class="menu-item-text">Sair</span>
+            </a>
+
+            <div class="mt-4 text-center text-xs text-gray-400 menu-item-text">
+              <p>Versão 1.0</p>
+              <p>Horário: <span id="currentTime">--:--:--</span></p>
+            </div>
+          </div>
+        </footer>
+      </aside>
+
+      <div
+        id="main-content-wrapper"
+        class="flex-1 overflow-y-auto transition-all duration-300"
+      >
+        <header
+          id="main-header"
+          class="glassmorphism-header sticky top-0 z-20 flex flex-wrap items-center justify-between gap-4 mb-8"
+        >
+          <div class="flex items-center gap-3">
+            <!-- Removed mobile menu button -->
+            <div>
+              <h1 class="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">
+                {% block header_title %}Portal de Conexões{% endblock %}
+              </h1>
+              <p class="text-gray-600 dark:text-gray-400">
+                {% block header_subtitle %} Bem-vindo,
+                <span id="header-username" class="font-semibold"
+                  >{{ username|default:'Usuário' }}</span
+                >! {% endblock %}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <button
+              id="command-palette-toggle-btn"
+              class="btn btn-icon btn-secondary md:btn-icon-label"
+              aria-label="Abrir paleta de comando"
+            >
+              <span class="material-icons-outlined">search</span>
+              <span class="hidden md:inline">Procurar...</span>
+              <kbd class="hidden md:inline kbd">Ctrl+K</kbd>
+            </button>
+            <button
+              id="notifications-button"
+              type="button"
+              class="btn btn-icon btn-ghost p-1 relative"
+              aria-label="Ver status dos sistemas"
+            >
+              <span class="material-icons-outlined text-xl md:text-2xl">notifications</span>
+              {% if unread_notification_count > 0 %}
+              <span id="notification-badge" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+              {% endif %}
+            </button>
+            <input type="hidden" id="latest-notification-id" value="{{ latest_notification_id|default:0 }}">
+            <button
+              id="hannah-assistant-button"
+              type="button"
+              class="btn btn-icon btn-ghost p-1"
+              aria-label="Assistente Virtual Hannah"
+            >
+              <span class="material-icons-outlined text-xl md:text-2xl">psychology</span>
+            </button>
+            <button
+              id="profile-link"
+              type="button"
+              class="btn btn-icon btn-ghost p-1"
+              aria-label="Ver perfil"
+            >
+              <span class="material-icons-outlined text-xl md:text-2xl">account_circle</span>
+            </button>
+            <button
+              id="settings-link"
+              type="button"
+              class="btn btn-icon btn-ghost p-1"
+              aria-label="Configurações"
+            >
+              <span class="material-icons-outlined text-xl md:text-2xl">settings</span>
+            </button>
+          </div>
+        </header>
+
+        <main
+          class="px-6 md:px-8 lg:px-10"
+          role="main"
+          data-get-profile-url="{% url 'get_user_profile' %}"
+          data-update-profile-url="{% url 'update_user_profile' %}"
+          data-profile-images-url="{% static 'profile_images/' %}"
+          data-status-api-url="/api/status"
+          data-hannah-chat-api-url="{% url 'hannah_chat' %}"
+        >
+          {% block content %} {% endblock %}
+        </main>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION POPOVER (Custom Implementation) -->
+    <div
+      id="notificationsModal"
+      class="hidden fixed inset-0 z-50 overflow-hidden"
+      aria-modal="true"
+      role="dialog"
+    >
+      <!-- Invisible Backdrop -->
+      <div 
+        class="absolute inset-0 bg-transparent transition-opacity cursor-default" 
+        onclick="App.modals.close('notificationsModal')"
+      ></div>
+
+      <!-- Popover Content -->
+      <div class="absolute top-20 right-4 w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] dark:shadow-black/50 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col max-h-[80vh] animate__animated animate__fadeInDown animate__faster origin-top-right">
+        
+        <!-- Header -->
+        <div class="flex flex-row items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm sticky top-0 z-10">
+          <div>
+              <h2 id="notificationsModalTitle" class="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+                Notificações
+              </h2>
+          </div>
+          <div class="flex items-center gap-1">
+              <button id="clear-notifications-button" class="btn btn-ghost btn-xs text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md font-medium px-2 py-1 h-8">
+                  Limpar tudo
+              </button>
+             {% if is_super_admin %}
+              <button onclick="App.notifications.toggleForm()" class="btn btn-ghost btn-sm btn-circle text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors tooltip tooltip-bottom" data-tip="Nova Notificação">
+                 <span class="material-icons-outlined text-xl">add_circle_outline</span>
+              </button>
+             {% endif %}
+          </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-800 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
+            <!-- Form (Collapsible) -->
+            {% if is_super_admin %}
+            <div id="new-notification-form" class="hidden m-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 animate__animated animate__fadeIn">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider" id="notif-form-title">
+                        Nova Mensagem
+                    </h3>
+                    <button onclick="App.notifications.toggleForm()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                        <span class="material-icons-outlined text-sm">close</span>
+                    </button>
+                </div>
+                <input type="hidden" id="notif-id">
+                <input type="hidden" id="notif-action" value="add">
+                <input type="text" id="notif-title" placeholder="Título" class="input-field mb-2 text-sm w-full font-semibold px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                <div class="mb-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
+                    <div id="notif-editor" class="h-24 text-gray-800 dark:text-gray-100 text-sm"></div>
+                </div>
+                <div class="flex justify-end pt-1">
+                    <button onclick="App.notifications.send()" class="btn btn-primary btn-sm w-full rounded-lg shadow-sm">Publicar</button>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- List -->
+            <div id="notification-list" class="divide-y divide-gray-50 dark:divide-gray-800/[.5]">
+              {% for notification in notifications %}
+                <div 
+                  class="group p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200 relative notification-item cursor-default" 
+                  data-id="{{ notification.id|unlocalize }}"
+                >
+                  <div class="flex gap-3">
+                      <!-- Avatar/Icon -->
+                      <div class="shrink-0">
+                          <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                              <span class="material-icons-outlined text-xl">article</span>
+                          </div>
+                      </div>
+                      
+                      <!-- Content -->
+                      <div class="flex-1 min-w-0 pt-0.5">
+                          <div class="flex justify-between items-start">
+                              <h4 class="font-semibold text-sm text-gray-900 dark:text-gray-100 leading-tight notification-title line-clamp-1">
+                                {{ notification.title }}
+                              </h4>
+                              <!-- Dot for 'unread' -->
+                              {% if notification.id not in read_notification_ids %}
+                              <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 ml-2 shrink-0 notification-dot"></span>
+                              {% endif %}
+                          </div>
+                          
+                          <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2 notification-message prose prose-sm dark:prose-invert max-w-none prose-p:my-0">
+                              {{ notification.message|safe|striptags }}
+                          </div>
+
+                          <div class="mt-2 flex items-center justify-between">
+                              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                  Sistema
+                              </span>
+                              <span class="text-[10px] text-gray-400">
+                                  {{ notification.created_at|date:"d M • H:i" }}
+                              </span>
+                          </div>
+
+                          {% if is_super_admin %}
+                          <div class="mt-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button onclick="App.notifications.startEdit('{{ notification.id|unlocalize }}', '{{ notification.title|escapejs }}', '{{ notification.message|escapejs }}')" class="text-[10px] text-blue-500 hover:underline">Editar</button>
+                              <button onclick="App.notifications.delete('{{ notification.id|unlocalize }}')" class="text-[10px] text-red-500 hover:underline">Excluir</button>
+                          </div>
+                          {% endif %}
+                      </div>
+                  </div>
+                </div>
+              {% empty %}
+                <div id="no-notifications" class="flex flex-col items-center justify-center py-16 text-center px-6">
+                   <div class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
+                       <span class="material-icons-outlined text-3xl text-gray-300 dark:text-gray-600">notifications_none</span>
+                   </div>
+                   <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">Nada por aqui</h3>
+                   <p class="text-xs text-gray-400 mt-1">Você não tem novas notificações.</p>
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="p-3 bg-gray-50 dark:bg-gray-800/80 border-t border-gray-100 dark:border-gray-700 text-center sticky bottom-0 z-10">
+            <button onclick="App.modals.close('notificationsModal')" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:text-blue-500 hover:underline transition-colors w-full">
+                Fechar Notificações
+            </button>
+        </div>
+      </div>
+    </div>
+    
+    <script src="{% static 'js/quill.min.js' %}"></script>
+    <script>
+       // Quill is initialized in notificacoes.js
+    </script>
+
+    <div
+      id="settingsModal"
+      class="modal"
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="settingsModalTitle"
+    >
+      <div class="modal-content glassmorphism-modal w-full max-w-2xl">
+        <button
+          class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+          id="closeSettingsModal"
+          aria-label="Fechar"
+        >
+          <span class="material-icons-outlined text-2xl">close</span>
+        </button>
+        <h2 id="settingsModalTitle" class="modal-title">Configurações</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="setting-card">
+            <h3 class="text-lg font-semibold mb-4">Tema Visual</h3>
+            <div class="mb-4">
+              <label for="tema" class="label-text">Escolha um tema:</label>
+              <select id="tema" class="input-field">
+                <option value="claro">Claro</option>
+                <option value="escuro">Escuro</option>
+                <option value="personalizado">Personalizado</option>
+              </select>
+            </div>
+            <div
+              id="customColorPickerContainer"
+              class="mb-4"
+              style="display: none"
+            >
+              <label for="customColorPicker" class="label-text"
+                >Cor Principal:</label
+              >
+              <input
+                type="color"
+                id="customColorPicker"
+                value="#f97316"
+                class="w-full h-10 p-1 border border-gray-300 dark:border-gray-500 rounded-md cursor-pointer"
+              />
+            </div>
+            <button id="salvarTema" class="btn btn-primary w-full text-sm">
+              Aplicar Tema
+            </button>
+          </div>
+          <div class="setting-card">
+            <h3 class="text-lg font-semibold mb-4">Acessibilidade</h3>
+            <div class="space-y-4">
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="altoContraste"
+                  class="form-checkbox"
+                />
+                <span class="ml-3 label-text">Modo de Alto Contraste</span>
+              </label>
+              <div class="space-y-2">
+                <label for="fontSizeSlider" class="label-text">
+                  Tamanho do Texto:
+                  <span id="fontSizeValue" class="font-bold">80</span>%
+                </label>
+                <input
+                  type="range"
+                  id="fontSizeSlider"
+                  min="80"
+                  max="140"
+                  value="80"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-orange-500"
+                />
+              </div>
+            </div>
+            <button
+              id="salvarAcessibilidade"
+              class="btn btn-primary w-full mt-4 text-sm"
+            >
+              Salvar Acessibilidade
+            </button>
+            <p
+              id="acessibilidadeSaveStatus"
+              class="text-sm text-green-600 dark:text-green-400 mt-3 text-center h-5 opacity-0 transition-opacity duration-300"
+            ></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="profileModal"
+      class="modal"
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="profileModalTitle"
+    >
+      <div class="modal-content w-full h-full max-w-none bg-transparent shadow-none p-0 flex justify-center items-center gap-0 relative" style="margin: 0;">
+        <!-- VEM Card (Left) -->
+        <div class="vem-card shrink-0 z-20 transition-transform duration-300 relative">
+            
+            <!-- Close Button (Inside Card - Top Right) -->
+            <button
+              class="absolute top-3 right-3 text-white/70 hover:text-white z-50 transition-colors"
+              id="closeProfileModal"
+              aria-label="Fechar"
+            >
+              <span class="material-icons text-xl md:text-2xl drop-shadow-md">close</span>
+            </button>
+
+            <!-- Edit Button on Card (Top Left) -->
+            <div class="absolute top-4 left-6 z-30">
+                <button id="editProfileButton" class="text-xs !bg-white !text-blue-900 px-3 py-1 rounded font-bold uppercase hover:bg-gray-200 transition-colors shadow-lg flex items-center gap-1 group">
+                    <span class="material-icons-outlined text-sm group-hover:scale-110 transition-transform">edit</span> Editar
+                </button>
+            </div>
+
+            <div class="vem-header">
+                <!-- Branding is in background image -->
+            </div>
+
+            <div class="vem-body">
+                <!-- Photo container removed -->
+                
+                <div class="vem-details" id="profileDisplayView">
+                    <div class="vem-label">Nome do Usuário</div>
+                    <div id="employeeNameDisplay" class="vem-value large">--</div>
+                    
+                    <div class="vem-label">Cargo / Função</div>
+                    <div id="employeeRoleDisplay" class="vem-value">--</div>
+
+                    <div class="vem-label">Email</div>
+                    <div id="employeeEmailView" class="vem-value" style="font-size: 11px;">--</div>
+                </div>
+            </div>
+
+            <div class="vem-footer">
+                <!-- Chip Removed -->
+                <div class="text-right w-full">
+                    <div class="vem-label">Matrícula (ID)</div>
+                    <div class="vem-id">#<span id="employeeIdDisplay">{{ user.id|stringformat:"04d" }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Side Panel (Right) - Hidden by default -->
+        <div id="profileEditSidePanel" class="hidden flex items-stretch animate__animated animate__fadeInRight -ml-2 z-10">
+             <!-- Dynamic Django Configuration -->
+    <script>
+        window.AppDjangoConfig = {
+            urls: {
+                updateProfile: "{% url 'update_user_profile' %}",
+                getProfile: "{% url 'get_user_profile' %}",
+                hannahChat: "{% url 'hannah_chat' %}",
+                statusApi: "/api/service-status/", // Keep hardcoded if no named URL, or create one.
+                latestNotification: "{% url 'get_latest_notification' %}",
+                manageNotification: "{% url 'manage_notification' %}",
+            },
+            profileImagesUrl: "{% static 'profile_images/' %}",
+            csrfToken: "{{ csrf_token }}",
+            userId: "{{ user.id|default:'' }}",
+        };
+    </script>
+
+    <!-- Modular Scripts -->
+             <!-- Visual Divider -->
+             <div class="w-6 flex items-center justify-center">
+                 <div class="h-3/4 w-0.5 bg-white/60 rounded"></div>
+             </div>
+
+             <!-- Panel Content -->
+             <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl w-72 flex flex-col justify-center border border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="material-icons-outlined text-blue-600">edit_note</span>
+                    Editar Dados
+                </h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="employeeNameInput" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Completo</label>
+                    <input type="text" id="employeeNameInput" class="input-field w-full" placeholder="Seu nome">
+                </div>
+                
+                <div>
+                    <label for="employeeRoleInput" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Cargo / Função</label>
+                    <input type="text" id="employeeRoleInput" class="input-field w-full" placeholder="Seu cargo">
+                </div>
+
+                <div>
+                    <label for="employeeEmailInput" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Email</label>
+                    <input type="email" id="employeeEmailInput" class="input-field w-full" placeholder="seu.email@exemplo.com">
+                </div>
+
+                <div>
+                    <label for="employeePhoneInput" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Telefone</label>
+                    <input type="tel" id="employeePhoneInput" class="input-field w-full" placeholder="(XX) XXXXX-XXXX">
+                </div>
+
+                <!-- Hidden Fields for Compatibility -->
+                 <span id="employeePhoneView" class="hidden"></span>
+                 <span id="hireDateValueView" class="hidden"></span>
+                 <p id="hireDateValueEdit" class="hidden"></p>
+                 <textarea id="employeeBioEdit" class="hidden"></textarea>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 flex gap-2 justify-end" id="profileEditButtons">
+                <button id="cancelEditProfileButton" class="btn btn-ghost text-sm text-gray-500 hover:text-gray-700">Cancelar</button>
+                <button id="saveProfileButton" class="btn btn-primary text-sm shadow-md">Salvar</button>
+            </div>
+            
+             <p id="profileSaveStatus" class="text-xs text-center mt-2 h-4 text-green-600"></p>
+         </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <div
+      id="hannah-widget"
+      class="hannah-widget hidden glassmorphism-card"
+      data-username="{{ username|default:'Usuário' }}"
+    >
+      <div
+        id="hannah-widget-header"
+        class="hannah-widget__header flex justify-between items-center"
+      >
+        <h2 class="hannah-widget__title flex items-center">
+          <span class="material-icons-outlined text-orange-500 mr-2"
+            >psychology</span
+          >
+          <span>Assistente Hannah</span>
+        </h2>
+        <div class="flex items-center">
+          <button
+            id="clear-hannah-history-btn"
+            class="text-gray-500 hover:text-red-500 mr-3 transition-colors duration-200"
+            title="Limpar Histórico"
+          >
+            <span class="material-icons-outlined">delete_sweep</span>
+          </button>
+          <button
+            id="close-hannah-widget-btn"
+            class="hannah-widget__close-btn"
+            aria-label="Fechar assistente"
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+      <div id="hannah-chat-box" class="hannah-widget__body"></div>
+      <div class="hannah-widget__footer">
+        <input
+          type="text"
+          id="hannah-chat-input"
+          class="input-field flex-grow"
+          placeholder="Digite sua pergunta..."
+        />
+        <button id="hannah-send-button" class="btn btn-primary btn-icon">
+          <span class="material-icons-outlined">send</span>
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="command-palette-modal"
+      class="modal"
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="command-palette-title"
+    >
+      <div
+        id="command-palette-content"
+        class="modal-content glassmorphism-modal p-0"
+      >
+        <div
+          class="flex items-center border-b border-gray-200/50 dark:border-gray-700/50"
+        >
+          <span
+            class="material-icons-outlined p-4 text-gray-500 dark:text-gray-400"
+            >search</span
+          >
+          <input
+            type="text"
+            id="command-palette-input"
+            class="input-field-transparent w-full !py-4"
+            placeholder="Digite um comando ou procure..."
+          />
+          <button
+            class="modal-close-btn -mr-1"
+            id="close-command-palette-modal"
+            aria-label="Fechar"
+          >
+            &times;
+          </button>
+        </div>
+        <ul
+          id="command-palette-results"
+          class="max-h-96 overflow-y-auto p-2"
+        ></ul>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"
+      defer
+    ></script>
+    <script src="{% static 'js/modules/utilitarios.js' %}" defer></script>
+    <script src="{% static 'js/modules/tema.js' %}" defer></script>
+    <script src="{% static 'js/modules/menu_lateral.js' %}" defer></script>
+    <script src="{% static 'js/modules/modais.js' %}" defer></script>
+    <script src="{% static 'js/modules/notificacoes.js' %}" defer></script>
+    <script src="{% static 'js/modules/perfil.js' %}" defer></script>
+    <script src="{% static 'js/modules/kanban.js' %}" defer></script>
+    <script src="{% static 'js/modules/chat.js' %}" defer></script>
+    <script src="{% static 'js/modules/paleta_comandos.js' %}" defer></script>
+    <script src="{% static 'js/modules/painel.js' %}" defer></script>
+    <script src="{% static 'js/modules/widgets.js' %}" defer></script>
+    <script src="{% static 'js/main.js' %}" defer></script>
+    <script>
+      window.currentUserId = "{{ user.id }}";
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typeof initFlowbite === "function") {
+          initFlowbite();
+        }
+      });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav lg:hidden !justify-center">
+         <a href="#" onclick="event.preventDefault(); document.getElementById('mobile-menu-sheet').classList.remove('hidden');" class="mobile-nav-item" style="max-width: 80px;">
+            <div class="mobile-nav-main-btn">
+                <span class="material-icons-outlined">menu</span>
+            </div>
+             <span class="text-xs mt-1">Menu</span>
+        </a>
+    </nav>
+
+    <!-- MOBILE BOTTOM SHEET MENU -->
+    <div id="mobile-menu-sheet" class="mobile-menu-sheet hidden lg:hidden">
+        <div class="sheet-overlay" onclick="App.sidebar.toggleMobileMenu()"></div>
+        <div class="sheet-content flex flex-col h-[85vh]">
+            <div class="sheet-header shrink-0">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                    <span class="material-icons-outlined text-orange-500">menu_book</span> Menu Principal
+                </h3>
+                <button onclick="App.sidebar.toggleMobileMenu()" class="btn btn-icon btn-ghost">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="sheet-body flex-1 overflow-y-auto pr-2 pb-20">
+                <!-- 1. Quick Access Grid -->
+                <div class="grid grid-cols-4 gap-3 mb-6">
+                     <a href="{% url 'portal_de_conexoes' %}" class="sheet-item">
+                        <div class="sheet-icon-bg bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
+                            <span class="material-icons-outlined">dashboard</span>
+                        </div>
+                        <span class="text-xs whitespace-nowrap" style="font-size: 0.65rem;">Dashboard</span>
+                    </a>
+                    <button onclick="openFeatureModal('modal-aprovar_registros'); App.sidebar.toggleMobileMenu()" class="sheet-item">
+                        <div class="sheet-icon-bg bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-300">
+                            <span class="material-icons-outlined">fact_check</span>
+                        </div>
+                        <span class="text-xs whitespace-nowrap" style="font-size: 0.65rem;">Aprovar</span>
+                    </button>
+                    <button onclick="openFeatureModal('modal-congestionamento'); App.sidebar.toggleMobileMenu()" class="sheet-item">
+                        <div class="sheet-icon-bg bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300">
+                            <span class="material-icons-outlined">traffic</span>
+                        </div>
+                        <span class="text-xs whitespace-nowrap" style="font-size: 0.65rem;">Congesti...</span>
+                    </button>
+                     <button onclick="openFeatureModal('modal-ouvidorias'); App.sidebar.toggleMobileMenu()" class="sheet-item">
+                        <div class="sheet-icon-bg bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300">
+                           <span class="material-icons-outlined">support_agent</span>
+                        </div>
+                        <span class="text-xs whitespace-nowrap" style="font-size: 0.65rem;">Ouvidorias</span>
+                    </button>
+                    <!-- Diesel -->
+                    <a href="#" onclick="event.preventDefault(); openFeatureModal('modal-cota_oleo_diesel'); App.sidebar.toggleMobileMenu()" class="sheet-item">
+                        <div class="sheet-icon-bg bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300">
+                            <span class="material-icons-outlined">local_gas_station</span>
+                        </div>
+                        <span class="text-xs whitespace-nowrap" style="font-size: 0.65rem;">Diesel</span>
+                    </a>
+                    <!-- Passageiro -->
+                    <a href="#" class="sheet-item">
+                        <div class="sheet-icon-bg bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-300">
+                            <span class="material-icons-outlined">group</span>
+                        </div>
+                        <span class="text-xs whitespace-nowrap" style="font-size: 0.65rem;">Passageiro</span>
+                    </a>
+                </div>
+
+                <hr class="border-gray-200 dark:border-gray-700 mb-4">
+
+                <!-- 2. Accordion Menus -->
+                <div class="space-y-2">
+                    <!-- Remuneração -->
+                    <div class="accordion-item">
+                        <button class="mobile-accordion-btn" onclick="App.sidebar.toggleAccordion(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-purple-500">attach_money</span>
+                                <span>Remuneração</span>
+                            </div>
+                            <span class="material-icons-outlined accordion-arrow">expand_more</span>
+                        </button>
+                        <div class="mobile-accordion-content">
+                            <button onclick="openFeatureModal('modal-parametros-remuneracao'); App.sidebar.toggleMobileMenu()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">settings</span> Parâmetros da Remuneração
+                            </button>
+                             <button onclick="openFeatureModal('modal-dados-frota-remuneracao'); App.sidebar.toggleMobileMenu()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">directions_bus</span> Dados de Frota de Remuneração
+                            </button>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">receipt_long</span> Bilhetagem | Efetivo de Remuneração
+                            </a>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">schedule</span> Programação da Remuneração
+                            </a>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">calculate</span> Cálculo da Remuneração
+                            </a>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">description</span> Relatórios de Remuneração
+                            </a>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">analytics</span> Relatórios SINFORME de Remuneração
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CCT -->
+                    <div class="accordion-item">
+                        <button class="mobile-accordion-btn" onclick="App.sidebar.toggleAccordion(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-indigo-500">work</span>
+                                <span>CCT</span>
+                            </div>
+                            <span class="material-icons-outlined accordion-arrow">expand_more</span>
+                        </button>
+                        <div class="mobile-accordion-content">
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">settings</span> Parâmetros da CCT
+                            </a>
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">directions_bus</span> Dados de Frota da CCT
+                            </a>
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">receipt_long</span> Bilhetagem | Efetivo da CCT
+                            </a>
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">schedule</span> Programação da CCT
+                            </a>
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">calculate</span> Cálculo da CCT
+                            </a>
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">search</span> Consultas da CCT
+                            </a>
+                            <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">analytics</span> Relatórios SINFORME da CCT
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Fator de Utilização -->
+                    <div class="accordion-item">
+                        <button class="mobile-accordion-btn" onclick="App.sidebar.toggleAccordion(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-pink-500">pie_chart</span>
+                                <span>Fator de Utilização</span>
+                            </div>
+                            <span class="material-icons-outlined accordion-arrow">expand_more</span>
+                        </button>
+                        <div class="mobile-accordion-content">
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">pie_chart</span> Fator de Utilização
+                            </a>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">people</span> Encargos Sociais
+                            </a>
+                             <a href="#" onclick="event.preventDefault()" class="mobile-menu-link">
+                                <span class="material-icons-outlined text-sm">description</span> Relatórios
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tabelas -->
+                    <div class="accordion-item">
+                        <a href="#" onclick="event.preventDefault()" class="mobile-accordion-btn">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-gray-500">table_chart</span>
+                                <span>Tabelas</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Ferramentas (Nested) -->
+                    <div class="accordion-item">
+                        <button class="mobile-accordion-btn" onclick="App.sidebar.toggleAccordion(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-blue-500">build</span>
+                                <span>Ferramentas</span>
+                            </div>
+                            <span class="material-icons-outlined accordion-arrow">expand_more</span>
+                        </button>
+                        <div class="mobile-accordion-content">
+                            <!-- Importação -->
+                            <div class="accordion-item ml-2">
+                                <button class="mobile-accordion-btn nested-accordion-btn" onclick="App.sidebar.toggleAccordion(this)">
+                                    <div class="flex items-center gap-3">
+                                        <span class="material-icons-outlined text-sm">upload</span>
+                                        <span>Importação</span>
+                                    </div>
+                                    <span class="material-icons-outlined accordion-arrow text-sm">expand_more</span>
+                                </button>
+                                <div class="mobile-accordion-content">
+                                    <a href="#" class="mobile-menu-link text-xs">Remuneração</a>
+                                    <a href="#" class="mobile-menu-link text-xs">CCT</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Custos</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Avaliação</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Fator Útil. e Encargos</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Indicadores</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Indicadores QualiÔnibus</a>
+                                </div>
+                            </div>
+                            <!-- Exportação -->
+                             <div class="accordion-item ml-2">
+                                <button class="mobile-accordion-btn nested-accordion-btn" onclick="App.sidebar.toggleAccordion(this)">
+                                    <div class="flex items-center gap-3">
+                                        <span class="material-icons-outlined text-sm">download</span>
+                                        <span>Exportação</span>
+                                    </div>
+                                    <span class="material-icons-outlined accordion-arrow text-sm">expand_more</span>
+                                </button>
+                                <div class="mobile-accordion-content">
+                                    <a href="#" class="mobile-menu-link text-xs">Remuneração</a>
+                                    <a href="#" class="mobile-menu-link text-xs">CCT</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Custos</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Avaliação</a>
+                                    <a href="#" class="mobile-menu-link text-xs">Fator Útil. e Encargos</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                         <button onclick="document.getElementById('logout-form').submit()" class="mobile-accordion-btn text-red-500">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined">logout</span>
+                                <span>Sair</span>
+                            </div>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+      {% include 'partials/confirmation_modal.html' %}
+      
+      <script>
+
+      </script>
+</body>
+</html>

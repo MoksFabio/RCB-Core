@@ -1,0 +1,26 @@
+<!-- Confirmation Modal -->
+<div id="confirmation-modal" class="modal" aria-hidden="true" style="display: none; z-index: 9999;">
+    <div class="modal-content glassmorphism-modal max-w-sm w-full mx-4 p-6 relative">
+        <div class="text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+                <span class="material-icons-outlined text-red-600 dark:text-red-400 text-2xl">warning</span>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" id="confirmation-modal-title">
+                Confirmar Ação
+            </h3>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500 dark:text-gray-400" id="confirmation-modal-message">
+                    Tem certeza que deseja prosseguir?
+                </p>
+            </div>
+        </div>
+        <div class="mt-6 flex justify-center gap-3">
+            <button type="button" id="confirmation-modal-cancel" class="btn btn-secondary w-full sm:w-auto">
+                Cancelar
+            </button>
+            <button type="button" id="confirmation-modal-confirm" class="btn btn-danger w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white">
+                Confirmar
+            </button>
+        </div>
+    </div>
+</div>

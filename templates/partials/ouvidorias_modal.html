@@ -1,0 +1,307 @@
+<div id="modal-ouvidorias" class="modal feature-modal" aria-hidden="true" style="z-index: 60;">
+    <div class="modal-content glassmorphism-modal w-full flex flex-col p-0 overflow-hidden" style="max-width: 1280px; max-height: 90vh; margin: 5vh auto;">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 shrink-0">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Ouvidorias</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Processamento de dados de demanda.</p>
+            </div>
+            <button class="modal-close-btn relative top-0 right-0 translate-x-0 translate-y-0" onclick="closeFeatureModal('modal-ouvidorias')" aria-label="Fechar">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="px-6 pb-6 pt-2 overflow-y-auto flex-1 custom-scrollbar">
+
+            <div id="flash-messages-container-ouv" class="mb-2 space-y-3"></div>
+
+
+
+            <div class="card p-0 relative shadow-none border-none bg-transparent">
+
+                <div id="assistant-selector" class="assistant-selector-container">
+                    <button id="select-demand-line-assistant" class="assistant-selector-btn active">Demanda de Linha</button>
+                    <button id="select-demand-mean-assistant" class="assistant-selector-btn">Demanda Média</button>
+                </div>
+
+                <!-- Demanda de Linha -->
+                <div id="demand-line-assistant-container">
+                    <div id="selection-screen">
+                        <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100 flex items-center">
+                            <span class="material-icons-outlined mr-3 text-orange-500">start</span>
+                            Assistente de Demanda de Linha
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            Selecione o tipo de dados para processar:
+                        </p>
+                        <div class="flex flex-wrap gap-4 mt-5 justify-start">
+                            <button id="select-permissionarias" class="btn btn-primary">
+                                <span class="material-icons-outlined">person</span>Permissionárias
+                            </button>
+                            <button id="select-concessionarias" class="btn btn-primary">
+                                <span class="material-icons-outlined">corporate_fare</span>Concessionárias
+                            </button>
+                            <button id="select-stpp-rmr" class="btn btn-primary">
+                                <span class="material-icons-outlined">merge_type</span>STPP/RMR (Combinado)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="main-assistant" class="hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 id="assistant-title"
+                                class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+                                <span class="material-icons-outlined mr-3 text-orange-500">rocket_launch</span>
+                                Processamento de Demanda
+                            </h2>
+                            <button id="back-to-selection-btn" class="btn btn-secondary !py-2 !px-3 text-sm">
+                                <span class="material-icons-outlined !mr-1.5">arrow_back</span>
+                                Trocar Tipo
+                            </button>
+                        </div>
+
+                        <fieldset class="fieldset">
+                            <legend>Arquivo(s) de Entrada (.txt)</legend>
+                            <div id="file-input-perm-container">
+                                <input type="file" id="file-input-perm" class="hidden" accept=".txt">
+                                <div id="drop-zone-perm" class="drop-zone">
+                                    <p class="drop-zone-text">Arraste o arquivo TXT das <strong>Permissionárias</strong> aqui ou
+                                        clique para selecionar</p>
+                                </div>
+                            </div>
+                            <div id="file-input-conc-container" class="hidden">
+                                <input type="file" id="file-input-conc" class="hidden" accept=".txt">
+                                <div id="drop-zone-conc" class="drop-zone">
+                                    <p class="drop-zone-text">Arraste o arquivo TXT das <strong>Concessionárias</strong> aqui ou
+                                        clique para selecionar</p>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>Filtros de Dados</legend>
+                            <div class="form-grid">
+                                <label for="cod-linhas">Códigos das Linhas:</label>
+                                <input type="text" id="cod-linhas" class="input-field" placeholder="Ex: 123, 456, 789 ou TODAS">
+
+                                <label for="empresas">Empresa(s):</label>
+                                <input type="text" id="empresas" class="input-field" placeholder="Ex: BOA, CAX, CNO ou TODAS">
+                                <p id="valid-empresas-info" class="valid-info">Válidas: -</p>
+
+                                <label for="line-tipo-dia">Tipo de Dia:</label>
+                                <select id="line-tipo-dia" class="input-field">
+                                    </select>
+                            </div>
+
+                            <div id="line-process-equivalent-container" class="mt-4 flex items-center hidden">
+                                <label class="flex items-center space-x-2 cursor-pointer select-none">
+                                    <input type="checkbox" id="line-process-equivalent" class="form-checkbox h-4 w-4 text-orange-600 transition duration-150 ease-in-out">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Incluir Passageiros Equivalentes</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>Períodos de Análise</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                                <div class="form-grid" style="gap: 0.5rem 1rem;">
+                                    <label for="data-inicio">Início:</label>
+                                    <input type="text" id="data-inicio" class="input-field" placeholder="DD/MM/AAAA">
+
+                                    <label for="data-fim">Fim:</label>
+                                    <input type="text" id="data-fim" class="input-field" placeholder="DD/MM/AAAA">
+
+                                    <div style="grid-column: 2; display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <button id="add-period-btn" class="btn btn-primary !py-2 !px-4 text-sm w-full">Adicionar
+                                            Período</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="period-list-container"></div>
+                                    <button id="remove-period-btn"
+                                        class="btn btn-secondary !py-1.5 !px-3 text-xs mt-2 float-right">Remover
+                                        Selecionado</button>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>Configuração do Arquivo de Saída</legend>
+                            <div class="form-grid">
+                                <label for="ouvidoria-id">Nº Ouvidoria/ID:</label>
+                                <input type="text" id="ouvidoria-id" class="input-field" value="Resp_Ouvidoria_">
+
+                                <label>Formato de Exportação:</label>
+                                <div class="toggle-switch-wrapper mt-2">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Excel</span>
+                                    <div
+                                        class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="export-format-line" id="export-format-line"
+                                            class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300" />
+                                        <label for="export-format-line"
+                                            class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">PDF</span>
+                                </div>
+
+                                <label>Pasta de Destino:</label>
+                                <div>
+                                    <p
+                                        class="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 p-2 rounded-md border border-gray-200 dark:border-gray-700">
+                                        O arquivo poderá ser salvo onde desejar ao clicar em 'Processar e Gerar Relatório'.
+                                    </p>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <button id="clear-btn" class="btn btn-secondary">
+                                <span class="material-icons-outlined">delete_sweep</span> Limpar Tudo
+                            </button>
+                            <button id="process-btn" class="btn btn-success text-base font-semibold">
+                                <span class="material-icons-outlined">play_arrow</span> Processar e Gerar Relatório
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Demanda Média -->
+                <div id="demand-mean-assistant-container" class="hidden">
+                    <div id="mean-selection-screen">
+                        <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100 flex items-center">
+                            <span class="material-icons-outlined mr-3 text-blue-500">insights</span>
+                            Assistente de Demanda Média
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            Selecione o tipo de dados para calcular a média:
+                        </p>
+                        <div class="flex flex-wrap gap-4 mt-5 justify-start">
+                            <button id="select-mean-permissionarias" class="btn btn-primary">
+                                <span class="material-icons-outlined">person</span>Permissionárias
+                            </button>
+                            <button id="select-mean-concessionarias" class="btn btn-primary">
+                                <span class="material-icons-outlined">corporate_fare</span>Concessionárias
+                            </button>
+                            <button id="select-mean-stpp-rmr" class="btn btn-primary">
+                                <span class="material-icons-outlined">merge_type</span>STPP/RMR (Combinado)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="main-mean-assistant" class="hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 id="mean-assistant-title" class="text-xl font-semibold text-gray-800 dark:text-gray-100">Cálculo de
+                                Demanda Média</h2>
+                            <button id="back-to-mean-selection-btn" class="btn btn-secondary !py-2 !px-3 text-sm">
+                                <span class="material-icons-outlined !mr-1.5">arrow_back</span> Trocar Tipo
+                            </button>
+                        </div>
+
+                        <fieldset class="fieldset">
+                            <legend>Arquivos de Entrada</legend>
+                            <div id="mean-file-inputs-container" class="space-y-4"></div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>Filtros e Parâmetros</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                <div>
+                                    <label for="mean-cod-linhas" class="block text-sm font-medium mb-1">Códigos das Linhas:</label>
+                                    <input type="text" id="mean-cod-linhas" class="input-field"
+                                        placeholder="Ex: 123, 456, ou TODAS">
+                                </div>
+                                <div>
+                                    <label for="mean-empresas" class="block text-sm font-medium mb-1">Empresa(s):</label>
+                                    <input type="text" id="mean-empresas" class="input-field" placeholder="Ex: BOA, CAX, ou TODAS">
+                                    <p id="mean-valid-empresas-info" class="text-xs text-gray-500 mt-1">Válidas: -</p>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" id="mean-multi-month-toggle"
+                                            class="form-checkbox h-4 w-4 text-orange-600">
+                                        <span>Selecionar Meses Específicos (em vez de intervalo)</span>
+                                    </label>
+                                </div>
+                                <div id="mean-date-range-container"
+                                    class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                    <div>
+                                        <label for="mean-data-inicio" class="block text-sm font-medium mb-1">Data Início:</label>
+                                        <input type="text" id="mean-data-inicio" class="input-field" placeholder="DD/MM/AAAA">
+                                    </div>
+                                    <div>
+                                        <label for="mean-data-fim" class="block text-sm font-medium mb-1">Data Fim:</label>
+                                        <input type="text" id="mean-data-fim" class="input-field" placeholder="DD/MM/AAAA">
+                                    </div>
+                                </div>
+                                <div id="mean-specific-months-container" class="hidden md:col-span-2">
+                                    <label for="mean-specific-months" class="block text-sm font-medium mb-1">Meses
+                                        Específicos:</label>
+                                    <input type="text" id="mean-specific-months" class="input-field"
+                                        placeholder="Ex: 01/2024, 03/2024">
+                                    <p class="text-xs text-gray-500 mt-1">Separar múltiplos meses por vírgula.</p>
+                                </div>
+                                <div>
+                                    <label for="mean-tipo-dia" class="block text-sm font-medium mb-1">Tipo de Dia para
+                                        Média:</label>
+                                    <select id="mean-tipo-dia" class="input-field"></select>
+                                </div>
+                                
+                                <div id="mean-process-equivalent-container" class="flex items-center self-end mb-1 hidden">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" id="mean-process-equivalent"
+                                            class="form-checkbox h-4 w-4 text-orange-600">
+                                        <span>Incluir Passageiros Equivalentes</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>Configuração do Arquivo de Saída</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                <div>
+                                    <label for="mean-ouvidoria-id" class="block text-sm font-medium mb-1">ID para Nome do
+                                        Arquivo:</label>
+                                    <input type="text" id="mean-ouvidoria-id" class="input-field" value="Resp_Ouvidoria_">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Formato de Exportação:</label>
+                                    <div class="toggle-switch-wrapper h-[42px]">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Excel</span>
+                                        <div
+                                            class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" name="export-format-mean" id="export-format-mean"
+                                                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300" />
+                                            <label for="export-format-mean"
+                                                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">PDF</span>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium mb-1">Pasta de Destino:</label>
+                                    <p
+                                        class="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 p-2 rounded-md border border-gray-200 dark:border-gray-700 flex items-center">
+                                        O arquivo poderá ser salvo onde desejar ao clicar em 'Processar e Gerar Relatório'.
+                                    </p>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <button id="mean-clear-btn" class="btn btn-secondary">
+                                <span class="material-icons-outlined">delete_sweep</span> Limpar
+                            </button>
+                            <button id="mean-process-btn" class="btn btn-success text-base font-semibold">
+                                <span class="material-icons-outlined">play_arrow</span> Processar e Gerar Relatório
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,191 @@
+<div id="modal-dados-frota-remuneracao" class="modal feature-modal" aria-hidden="true" style="z-index: 60;">
+    <div class="modal-content glassmorphism-modal w-full modal-xl-custom flex flex-col p-0 overflow-hidden" style="max-width: 95vw; height: 90vh;">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 shrink-0">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Dados de Frota</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Gerenciamento dos dados da frota de remuneração.</p>
+            </div>
+            <button class="modal-close-btn" onclick="closeFeatureModal('modal-dados-frota-remuneracao')" aria-label="Fechar">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+            
+            <!-- Filters Section -->
+            <div class="mb-6 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <!-- Line 1: Ano, Mês, Quinzena -->
+                <div class="flex flex-wrap items-center gap-4 mb-4">
+                    <!-- Ano -->
+                    <div class="flex items-center gap-2">
+                        <label for="frota-ano" class="text-sm font-medium text-gray-700 dark:text-gray-300">Ano</label>
+                        <input type="number" id="frota-ano" class="input-field !py-1 !px-2 !w-20 text-center" value="2025">
+                    </div>
+
+                    <!-- Mês -->
+                    <div class="flex items-center gap-2">
+                        <label for="frota-mes" class="text-sm font-medium text-gray-700 dark:text-gray-300">Mês</label>
+                        <select id="frota-mes" class="input-field !py-1 !px-2 !w-32">
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11" selected>Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+
+                    <!-- Quinzena -->
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Quinzena</span>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" id="frota-quinzena-1" name="frota-quinzena" value="1" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500">
+                            <label for="frota-quinzena-1" class="text-sm font-medium text-gray-700 dark:text-gray-300">1</label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" id="frota-quinzena-2" name="frota-quinzena" value="2" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500" checked>
+                            <label for="frota-quinzena-2" class="text-sm font-medium text-gray-700 dark:text-gray-300">2</label>
+                        </div>
+                    </div>
+
+                    <!-- Todas as Quinzenas -->
+                    <div class="flex items-center gap-2 ml-4">
+                        <input type="checkbox" id="frota-todas-quinzenas" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500">
+                        <label for="frota-todas-quinzenas" class="text-sm font-medium text-gray-700 dark:text-gray-300">Apresentar todas as quinzenas</label>
+                    </div>
+
+                    <!-- Navigation Arrows -->
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-green-600">
+                            <span class="material-icons-outlined">arrow_circle_left</span>
+                        </button>
+                        <button class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-green-600">
+                            <span class="material-icons-outlined">arrow_circle_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Line 2: Operador, Linha -->
+                <div class="flex flex-wrap items-center gap-4">
+                    <!-- Operador -->
+                    <div class="flex items-center gap-2 flex-1 max-w-sm">
+                        <label for="frota-operador" class="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[60px]">Operador</label>
+                        <select id="frota-operador" class="input-field !py-1 !px-2 w-full">
+                            <option value="TODOS" selected>TODOS</option>
+                            <option value="CNO">CNO</option>
+                            <option value="MOB">MOB</option>
+                        </select>
+                    </div>
+
+                    <!-- Linha -->
+                    <div class="flex items-center gap-2 flex-1 max-w-sm">
+                        <label for="frota-linha" class="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[40px]">Linha</label>
+                        <select id="frota-linha" class="input-field !py-1 !px-2 w-full">
+                            <option value="TODAS" selected>TODAS</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs/Toolbar Section (Styled like Tabs in Parametros but acting as Toolbar) -->
+            <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
+                        <li class="mr-2" role="presentation">
+                            <button class="inline-block p-4 rounded-t-lg border-b-2 border-orange-500 text-orange-600 dark:text-orange-500" type="button" role="tab">
+                                Dados de Frota
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Toolbar Actions match logic but cleaner style -->
+                   <div class="flex items-center gap-2 pb-2">
+                        <!-- CRUD -->
+                        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                             <button class="p-1.5 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded bg-white shadow-sm" title="Adicionar">
+                                <span class="material-icons-outlined text-sm">add</span>
+                            </button>
+                            <button class="p-1.5 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Excluir">
+                                <span class="material-icons-outlined text-sm">remove</span>
+                            </button>
+                             <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                            <button class="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Editar">
+                                <span class="material-icons-outlined text-sm">edit</span> Editar
+                            </button>
+                            <button class="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Salvar">
+                                <span class="material-icons-outlined text-sm">save</span> Salvar
+                            </button>
+                            <button class="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600 rounded" title="Cancelar">
+                                <span class="material-icons-outlined text-sm">close</span> Cancelar
+                            </button>
+                        </div>
+
+                         <!-- Import -->
+                         <button class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow transition-colors">
+                            <span class="material-icons-outlined text-sm">upload_file</span> Importar DBF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Operador</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Cód Veículo</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Placa</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Data Cadastro</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Data Carroceria</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Data Chassi</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Data Baixa</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Categoria do Veículo</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Classificação do Veículo</th>
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Tipo de Pneu</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Example Row -->
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                            <td class="px-6 py-4">--</td>
+                        </tr>
+                         <!-- Empty Row filler -->
+                         {% for i in "12345" %}
+                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                             <td class="px-6 py-4">&nbsp;</td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                             <td class="px-6 py-4"></td>
+                         </tr>
+                         {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

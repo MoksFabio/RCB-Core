@@ -1,0 +1,175 @@
+<div id="modal-aprovar_registros" class="modal feature-modal" aria-hidden="true" style="display: none;">
+    <div class="modal-content glassmorphism-modal w-full max-w-7xl mx-auto rounded-xl overflow-hidden my-8 p-0 flex flex-col max-h-[90vh]">
+        
+        <button class="modal-close-btn absolute top-4 right-4 z-50 text-2xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full p-2 transition-all" onclick="closeFeatureModal('modal-aprovar_registros')">&times;</button>
+        
+        <header class="relative flex items-center justify-between h-20 px-8 shrink-0 mb-2 border-b border-gray-200/30 dark:border-gray-700/30">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Aprovar Registros</h1>
+                <p class="text-gray-600 dark:text-gray-400">Gerencie os registros pendentes e usuários aprovados no sistema.</p>
+            </div>
+        </header>
+
+        <main class="px-6 md:px-8 lg:px-10 pb-10 overflow-y-auto custom-scrollbar">
+
+            <div id="flash-messages-container-aprov" class="mb-6 animate__animated animate__fadeIn space-y-3">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="flash-message {{ message.tags }}" role="alert">
+                    <span class="material-icons-outlined mr-3">
+                        {% if 'success' in message.tags %}check_circle
+                        {% elif 'error' in message.tags %}warning
+                        {% else %}info{% endif %}
+                    </span>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-0 flex flex-col bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div class="p-6 shrink-0 border-b border-gray-100 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center mb-2">
+                            <span class="material-icons-outlined mr-3 text-blue-500">pending_actions</span>
+                            Registros Pendentes
+                        </h2>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Visualize e aprove ou rejeite os registros que aguardam ativação.</p>
+                    </div>
+                    
+                    <div class="overflow-y-auto max-h-[50vh] lg:max-h-[400px] custom-scrollbar">
+                        <table class="data-table w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                            <thead class="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase sticky top-0 z-10 shadow-sm">
+                                <tr>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700">ID</th>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700">Usuário</th>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700">Status</th>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                                {% for registro in registros %}
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                                    <td class="px-6 py-4">{{ forloop.counter }}</td>
+                                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ registro.username }}</td>
+                                    <td class="px-6 py-4">{{ registro.status }}</td>
+                                    <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
+                                        <form action="{% url 'aprovar_registro' id=registro.id %}" method="POST" class="inline-block">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-success btn-sm flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 hover:bg-green-200 rounded" title="Aprovar">
+                                                <span class="material-icons-outlined text-sm">check</span> Aprovar
+                                            </button>
+                                        </form>
+                                        <form action="{% url 'rejeitar_registro' id=registro.id %}" method="POST" class="inline-block">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded" title="Rejeitar">
+                                                <span class="material-icons-outlined text-sm">close</span> Rejeitar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-10 text-gray-500">
+                                        <div class="flex flex-col items-center">
+                                            <span class="material-icons-outlined text-4xl text-gray-300 mb-2">inbox</span>
+                                            Nenhum registro pendente.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card p-0 flex flex-col bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div class="p-6 shrink-0 border-b border-gray-100 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center mb-2">
+                            <span class="material-icons-outlined mr-3 text-green-500">group</span>
+                            Usuários Aprovados
+                        </h2>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Visualize e gerencie os usuários ativos do sistema.</p>
+                    </div>
+                    
+                    <div class="overflow-y-auto max-h-[50vh] lg:max-h-[400px] custom-scrollbar">
+                        <table class="data-table w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                            <thead class="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase sticky top-0 z-10 shadow-sm">
+                                <tr>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700">ID</th>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700">Usuário</th>
+                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                                {% for usuario in usuarios_aprovados %}
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                                    <td class="px-6 py-4">{{ forloop.counter }}</td>
+                                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ usuario.username }}</td>
+                                    <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap">
+                                        {% if usuario.is_staff or usuario.is_superuser %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                            <span class="material-icons-outlined text-sm mr-1">admin_panel_settings</span>
+                                            Administrador
+                                        </span>
+                                        {% else %}
+                                        <button type="button" class="btn btn-secondary btn-sm edit-user-btn-aprov inline-flex items-center gap-1 px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded" title="Editar Usuário"
+                                                data-user-id="{{ usuario.id }}" data-user-username="{{ usuario.username }}">
+                                            <span class="material-icons-outlined text-sm">edit</span> Editar
+                                        </button>
+                                        <form action="{% url 'remover_usuario' id=usuario.id %}" method="POST" class="inline-block">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm inline-flex items-center gap-1 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded" title="Remover Usuário">
+                                                <span class="material-icons-outlined text-sm">delete</span> Remover
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center py-10 text-gray-500">
+                                        <div class="flex flex-col items-center">
+                                            <span class="material-icons-outlined text-4xl text-gray-300 mb-2">person_off</span>
+                                            Nenhum usuário aprovado.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="editUserModal-aprov" class="modal" aria-modal="true" role="dialog" aria-labelledby="editUserModalTitle-aprov" style="z-index: 1050;">
+    <div class="modal-content glassmorphism-modal max-w-md mx-auto mt-20 relative">
+        <button class="modal-close-btn absolute top-4 right-4" id="closeEditUserModal-aprov" aria-label="Fechar" onclick="closeModal('editUserModal-aprov')">&times;</button>
+        <h2 id="editUserModalTitle-aprov" class="modal-title text-xl font-bold mb-4">Editar Usuário</h2>
+        <form id="editUserForm-aprov" method="POST">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label for="newUsername-aprov" class="label-text mb-1 block">Novo Nome de Usuário</label>
+                    <input type="text" id="newUsername-aprov" name="username" class="input-field w-full" required>
+                </div>
+                <div>
+                    <label for="newPassword-aprov" class="label-text mb-1 block">Nova Senha (opcional)</label>
+                    <input type="password" id="newPassword-aprov" name="password" class="input-field w-full"
+                        placeholder="Deixe em branco para não alterar">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">A senha será criptografada no banco de dados.</p>
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end gap-3">
+                <button type="button" id="cancelEditUser-aprov" class="btn btn-secondary" onclick="closeModal('editUserModal-aprov')">Cancelar</button>
+                <button type="submit" class="btn btn-primary flex items-center gap-2">
+                    <span class="material-icons-outlined">save</span>
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

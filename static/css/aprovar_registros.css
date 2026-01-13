@@ -1,0 +1,106 @@
+/* 
+   Aprovar Registros Modal CSS
+   Extracted from portal.css and specialized
+*/
+
+/* --- Data Table Styles --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dark-theme .data-table thead {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.data-table th,
+.data-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.dark-theme .data-table th,
+.dark-theme .data-table td {
+    border-bottom-color: var(--dark-cor-borda);
+    color: var(--dark-cor-texto-principal);
+}
+
+.data-table th {
+    font-weight: 600;
+    color: var(--cor-texto-secundario);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--cor-secundaria);
+}
+
+.dark-theme .data-table tbody tr:hover {
+    background-color: var(--dark-cor-secundaria);
+}
+
+.data-table .actions-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.admin-notice {
+    font-size: 0.875rem;
+    color: var(--cor-warning);
+    font-style: italic;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.dark-theme .admin-notice {
+    color: var(--dark-cor-warning);
+}
+
+/* User Edit Modal specific tweaks if needed */
+#editUserModal-aprov .modal-content {
+    max-width: 450px;
+}
+
+/* --- Estilização APENAS DA APARÊNCIA da Barra de Rolagem --- */
+/* (A altura e o comportamento de rolagem agora estão no HTML via Tailwind) */
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.dark-theme .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1; /* Cinza claro */
+    border-radius: 4px;
+    border: 2px solid transparent; /* Cria um efeito de padding */
+    background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8; /* Cinza mais escuro ao passar o mouse */
+}
+
+/* Modo Escuro */
+.dark-theme .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+}
+
+.dark-theme .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+}

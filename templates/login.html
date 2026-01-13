@@ -1,0 +1,539 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - RCB</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/rcb_logo.png' %}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined"
+      rel="stylesheet"
+    />
+
+    <link
+      href="{% static 'css/libs/tailwind.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  </head>
+
+  <body class="bg-gray-50">
+    <div class="main-container">
+      <div class="info-panel">
+        <div class="info-logos-wrapper">
+          <img
+            src="{% static 'images/rcb_logo.png' %}"
+            alt="Logo RCB"
+            class="info-logo"
+          />
+          <img
+            src="{% static 'images/ctm1.png' %}"
+            alt="Logo Grande Recife"
+            class="info-logo-grande-recife"
+          />
+        </div>
+        <h2 class="info-title">Bem-vindo ao RCB!</h2>
+        <p class="info-description">
+          O portal RCB (Remuneração, Custos e Bilhetagem) é uma plataforma
+          desenvolvida para modernizar e redefinir a eficiência dos processos
+          analíticos do STPP/RMR.
+        </p>
+        <p class="info-description">
+          A nossa missão é transformar tarefas complexas que consumiam horas ou
+          dias em operações automáticas, rápidas e robustas. O sistema
+          automatiza cálculos críticos e gera relatórios essenciais.
+        </p>
+
+        <button
+          id="open-history-modal"
+          class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow font-medium hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center gap-2"
+        >
+          <span class="material-icons-outlined">history</span>
+          Saiba mais sobre a trajetória
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="login-container">
+        <div class="validator-wrapper">
+          <div class="validator-camera"></div>
+
+          <div class="validator" id="validator-flipper">
+            <div class="validator-face validator-front">
+              <div class="validator-head"></div>
+              <div class="validator-body">
+                <div class="validator-screen">
+                  <p class="text-gray-200">Acesse sua Conta!</p>
+
+                  <div
+                    class="flash-messages-container"
+                    id="login-flash-container"
+                  ></div>
+
+                  <form
+                    method="POST"
+                    class="space-y-4"
+                    id="login-form"
+                    data-login-url="{% url 'login' %}"
+                  >
+                    {% csrf_token %}
+                    <div>
+                      <label for="login-username" class="screen-label"
+                        >Usuário</label
+                      >
+                      <div class="form-input-group">
+                        <input
+                          type="text"
+                          id="login-username"
+                          name="username"
+                          class="form-input screen-input has-icon-left"
+                          placeholder="Digite seu nome de usuário"
+                          required
+                          autocomplete="username"
+                        />
+                        <span
+                          class="material-icons-outlined input-icon-left screen-icon"
+                          >person</span
+                        >
+                      </div>
+                    </div>
+
+                    <div>
+                      <label for="login-password" class="screen-label"
+                        >Senha</label
+                      >
+                      <div class="form-input-group">
+                        <input
+                          type="password"
+                          id="login-password"
+                          name="password"
+                          class="form-input screen-input has-icon-right"
+                          placeholder="Digite sua senha"
+                          required
+                          autocomplete="current-password"
+                        />
+                        <span
+                          id="toggle-login-password"
+                          class="material-icons-outlined input-icon-right screen-icon"
+                          title="Mostrar/Ocultar senha"
+                        >
+                          visibility_off
+                        </span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="indicator-lights">
+                  <span class="light red" id="light-red"></span>
+                  <span class="light green" id="light-green"></span>
+                </div>
+
+                <div class="nfc-icon-area">
+                  <button
+                    type="button"
+                    id="nfc-submit-button"
+                    class="nfc-button"
+                  >
+                    <img
+                      src="{% static 'images/nfc.png' %}"
+                      alt="Ícone de NFC por aproximação"
+                      class="nfc-contactless-icon"
+                    />
+                  </button>
+                  <img
+                    src="{% static 'images/qrcode.png' %}"
+                    alt="QR Code fictício"
+                    class="qr-code-placeholder"
+                  />
+                </div>
+
+                <div class="validator-footer">
+                  <p class="text-sm text-gray-400">
+                    Não tem uma conta?
+                    <a id="toggle-to-register" class="register-link">
+                      Registre-se aqui
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="validator-face validator-back">
+              <div class="validator-head"></div>
+              <div class="validator-body">
+                <div class="validator-screen">
+                  <p class="text-gray-200">Crie sua Conta</p>
+
+                  <div
+                    class="flash-messages-container"
+                    id="register-flash-container"
+                  ></div>
+
+                  <form
+                    method="POST"
+                    class="space-y-3"
+                    id="register-form"
+                    data-register-url="{% url 'api_register' %}"
+                  >
+                    {% csrf_token %}
+                    <div>
+                      <label for="register-username" class="screen-label"
+                        >Usuário</label
+                      >
+                      <div class="form-input-group">
+                        <input
+                          type="text"
+                          id="register-username"
+                          name="username"
+                          class="form-input screen-input has-icon-left"
+                          placeholder="Escolha um nome de usuário"
+                          required
+                          autocomplete="username"
+                        />
+                        <span
+                          class="material-icons-outlined input-icon-left screen-icon"
+                          >person</span
+                        >
+                      </div>
+                    </div>
+
+                    <div>
+                      <label for="register-password" class="screen-label"
+                        >Senha</label
+                      >
+                      <div class="form-input-group">
+                        <input
+                          type="password"
+                          id="register-password"
+                          name="password"
+                          class="form-input screen-input has-icon-right"
+                          placeholder="Crie uma senha segura"
+                          required
+                          autocomplete="new-password"
+                        />
+                        <span
+                          id="toggle-register-password"
+                          class="material-icons-outlined input-icon-right screen-icon"
+                          title="Mostrar/Ocultar senha"
+                        >
+                          visibility_off
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        for="register-confirm-password"
+                        class="screen-label"
+                        >Confirmar Senha</label
+                      >
+                      <div class="form-input-group">
+                        <input
+                          type="password"
+                          id="register-confirm-password"
+                          name="confirm_password"
+                          class="form-input screen-input has-icon-right"
+                          placeholder="Digite a senha novamente"
+                          required
+                          autocomplete="new-password"
+                        />
+                        <span
+                          id="toggle-register-confirm-password"
+                          class="material-icons-outlined input-icon-right screen-icon"
+                          title="Mostrar/Ocultar senha"
+                        >
+                          visibility_off
+                        </span>
+                      </div>
+                    </div>
+                  </form>
+
+                  <button
+                    type="button"
+                    id="register-submit-button"
+                    class="btn-primary-screen"
+                  >
+                    <span class="material-icons-outlined">person_add</span>
+                    Registrar
+                  </button>
+
+                  <div class="alert-box-screen">
+                    <span class="material-icons-outlined">campaign</span>
+                    <p>
+                      Após o registro, solicite a ativação a um administrador.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="validator-footer">
+                  <p class="text-sm text-gray-400">
+                    Já tem uma conta?
+                    <a id="toggle-to-login" class="register-link">
+                      Faça o login!
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-card-wrapper" id="card-wrapper">
+          <button type="button" id="submit-card" class="submit-card"></button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="history-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        id="modal-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50"
+        title="Fechar"
+      ></div>
+
+      <div
+        class="bg-white rounded-lg shadow-xl w-full max-w-2xl z-10 animate__animated animate__fadeInUp animate__faster"
+      >
+        <div class="flex justify-between items-center p-4 border-b">
+          <h3 class="text-xl font-semibold text-gray-800">
+            A Trajetória do RCB
+          </h3>
+          <button
+            id="close-history-modal"
+            class="text-gray-500 hover:text-gray-800"
+            title="Fechar"
+          >
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="text-gray-700 overflow-hidden">
+          <div
+            id="modal-pages-wrapper"
+            class="flex transition-transform duration-300 ease-in-out"
+          >
+            <div class="modal-page w-full flex-shrink-0 p-6 space-y-3">
+              <h4
+                class="text-lg font-semibold text-gray-900 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-blue-600"
+                  >architecture</span
+                >
+                O Ponto de Partida
+              </h4>
+              <p>
+                O projeto RCB nasceu como um desafio abraçado com total empenho
+                pela equipe de desenvolvimento, marcando uma nova trajetória no
+                Consórcio de Transporte do Grande Recife e tornando-se um
+                importante legado.
+              </p>
+
+              <h3
+                class="text-md font-semibold text-gray-800 pt-2 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-blue-600"
+                  >task_alt</span
+                >
+                Propósito
+              </h3>
+              <p>
+                O propósito era claro: substituir o antigo sistema RCA e
+                transformar a rotina da GECO (Gerência de Contratos e
+                Concessão), automatizando processos que antes causavam atrasos e
+                consumiam um tempo valioso da equipe.
+              </p>
+
+              <h3
+                class="text-md font-semibold text-gray-800 pt-2 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-blue-600"
+                  >school</span
+                >
+                O Desafio e o Legado
+              </h3>
+              <p>
+                Foi um percurso de aprendizado intenso e recompensador.
+                Trabalhar no RCB significou colocar a teoria em prática, superar
+                desafios de integração, codificar soluções complexas e,
+                principalmente, criar algo que realmente impactasse o cotidiano
+                dos colaboradores.
+              </p>
+            </div>
+
+            <div class="modal-page w-full flex-shrink-0 p-6 space-y-3">
+              <h4
+                class="text-lg font-semibold text-gray-900 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-blue-600"
+                  >build_circle</span
+                >
+                Tecnologias Utilizadas
+              </h4>
+              <ul class="list-none space-y-2 pl-2">
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-600"
+                    >code</span
+                  >
+                  <div>
+                    <strong class="text-gray-800">Backend:</strong> Python
+                  </div>
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-600"
+                    >layers</span
+                  >
+                  <div>
+                    <strong class="text-gray-800">Frontend:</strong> HTML, CSS e
+                    JavaScript
+                  </div>
+                </li>
+              </ul>
+
+              <h4
+                class="text-lg font-semibold text-gray-900 pt-3 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-blue-600"
+                  >auto_graph</span
+                >
+                Resultados e Impacto
+              </h4>
+              <p>
+                O resultado é um sistema que não só moderniza, mas redefine a
+                eficiência. Foram desenvolvidas funções cruciais:
+              </p>
+              <ul class="list-none space-y-2 pl-2">
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-green-600"
+                    >speed</span
+                  >
+                  Relatórios que levavam horas agora são gerados em menos de 30
+                  segundos.
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-red-600"
+                    >picture_as_pdf</span
+                  >
+                  Criação do relatório de Passageiro Integrado (via ReportLab) —
+                  uma ferramenta que não existia.
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-blue-600"
+                    >support_agent</span
+                  >
+                  Gestão e automação das demandas da Ouvidoria, reduzindo o
+                  trabalho manual no SEI.
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-700"
+                    >local_gas_station</span
+                  >
+                  Cálculo da Cota de Óleo Diesel, que automatiza um processo que
+                  antes levava dias.
+                </li>
+              </ul>
+            </div>
+
+            <div class="modal-page w-full flex-shrink-0 p-6 space-y-4">
+              <h4
+                class="text-lg font-semibold text-gray-900 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-blue-600"
+                  >handshake</span
+                >
+                Agradecimentos
+              </h4>
+              <p>
+                Este projeto foi a evidência de que a dedicação e a sede de
+                aprendizado em equipe podem levar a grandes resultados, deixando
+                o RCB como uma ferramenta eficaz e transformadora.
+              </p>
+              <h3
+                class="text-md font-semibold text-gray-800 pt-2 flex items-center gap-2"
+              >
+                <span class="material-icons-outlined text-gray-600"
+                  >foundation</span
+                >
+                Pilares do Projeto
+              </h3>
+              <p>
+                Nada disso teria sido alcançado sem o suporte e a confiança de
+                pessoas extraordinárias que acreditaram no potencial deste
+                projeto:
+              </p>
+              <ul class="list-none space-y-2 pl-4">
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-700"
+                    >person</span
+                  >
+                  Fábio Silva de Lima
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-700"
+                    >person</span
+                  >
+                  Pedro Rodrigues Gonçalves
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-700"
+                    >person</span
+                  >
+                  José Augusto Rocha
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-icons-outlined text-gray-700"
+                    >person</span
+                  >
+                  Luan Ferreira
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex justify-between items-center p-4 bg-gray-50 border-t rounded-b-lg"
+        >
+          <button
+            id="modal-btn-prev"
+            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
+          >
+            <span class="material-icons-outlined">chevron_left</span>
+            Anterior
+          </button>
+
+          <span id="modal-page-indicator" class="text-sm text-gray-600"></span>
+
+          <button
+            id="modal-btn-next"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+          >
+            Próximo
+            <span class="material-icons-outlined">chevron_right</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/login.js' %}"></script>
+  </body>
+</html>
